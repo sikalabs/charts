@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Simple Docker Registry
 name: simple-registry
-version: 0.3.1-dev
+version: 0.3.1
