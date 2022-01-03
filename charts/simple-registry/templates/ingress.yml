@@ -3,10 +3,10 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}
   annotations:
-    kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
     nginx.ingress.kubernetes.io/proxy-body-size: {{ .Values.proxyBodySize }}
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - {{ .Values.host }}
