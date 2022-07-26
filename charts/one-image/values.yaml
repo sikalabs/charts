@@ -14,3 +14,4 @@ dockerRegistryAuth: null
 restartAfterRedeploy: false
 CI_PROJECT_PATH_SLUG:
 CI_ENVIRONMENT_SLUG:
+containerEnv:
