@@ -11,5 +11,6 @@ replicas: 1
 tls: true
 dockerRegistry: null
 dockerRegistryAuth: null
+restartAfterRedeploy: false
 CI_PROJECT_PATH_SLUG:
 CI_ENVIRONMENT_SLUG:

@@ -30,6 +30,9 @@ spec:
       {{ if .Values.CI_ENVIRONMENT_SLUG }}
         app.gitlab.com/env: {{ .Values.CI_ENVIRONMENT_SLUG }}
       {{ end }}
+      {{ if .Values.restartAfterRedeploy }}
+        rollme: {{ randAlphaNum 5 | quote }}
+      {{ end }}
       labels:
         release: {{ .Release.Name }}
     spec:
