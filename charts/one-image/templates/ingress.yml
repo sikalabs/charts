@@ -12,7 +12,7 @@ metadata:
     {{ if .Values.tls }}
     cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
     {{ end }}
-    {{ if .Values.basicAuth }}
+    {{ if and (.Values.basicAuth.username) (.Values.basicAuth.password)  }}
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: {{ .Release.Name }}-auth
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'

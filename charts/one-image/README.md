@@ -31,4 +31,11 @@ helm upgrade --install \
 - `dockerRegistryAuth` (default `null`) - Base64 encoded `user:token`, eg. `dXNlcjp0b2tlbgo=`
 - `restartAfterRedeploy` (default `false`) - restart pod after every update
 - `containerEnv` (default `null`) - add environment variable to container
-- `basicAuth` (default `null`) - Base64 encoded htpasswd file
+
+#### BasicAuth
+You can define BasicAuth credentials in values.yaml
+```
+basicAuth:
+  username: null (default)
+  password: null (default)
+```

@@ -18,4 +18,6 @@ containerEnv: {}
 # containerEnv:
 #   FOO: hello
 #   BAR: world
-basicAuth: null
+basicAuth:
+  username: null
+  password: null
