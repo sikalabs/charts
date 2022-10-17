@@ -53,6 +53,11 @@ spec:
                 - --v2
                 {{ end }}
               imagePullPolicy: Always
+              {{ if .Values.existingSecret }}
+              envFrom:
+              - secretRef:
+                  name: {{ .Values.existingSecret }}
+              {{ end }}
               volumeMounts:
               - name: ssl
                 mountPath: /etc/ssl
