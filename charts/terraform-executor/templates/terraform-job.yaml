@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-{{ .Release.Revision }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Release.Name }}
+      containers:
+        - name: main
+          image: {{ .Values.image }}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - |
+              mkdir /tmp/workdir && \
+              cp -r /tmp/src /tmp/workdir && \
+              cd /tmp/workdir/src && \
+              terraform init $TERRAFORM_INIT_EXTRA_ARGS && \
+              terraform apply -auto-approve $TERRAFORM_APPLY_EXTRA_ARGS
+          env:
+            - name: KUBE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- range $k, $v := .Values.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: src
+              mountPath: /tmp/src
+      volumes:
+        - name: src
+          configMap:
+            name: {{ .Release.Name }}
+      restartPolicy: Never
+  backoffLimit: 1

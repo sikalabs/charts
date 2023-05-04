@@ -1,0 +1,9 @@
+# ===== Required =====
+main_tf:
+
+# ===== Optional =====
+image: hashicorp/terraform:1.4
+env: {}
+# env:
+#   TERRAFORM_INIT_EXTRA_ARGS: "..."
+#   TERRAFORM_APPLY_EXTRA_ARGS: "..."

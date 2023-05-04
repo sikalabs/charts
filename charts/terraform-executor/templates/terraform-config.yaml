@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  terraform.tf: |
+{{ required ".Values.terraform_tf is required" .Values.terraform_tf | indent 4 }}
