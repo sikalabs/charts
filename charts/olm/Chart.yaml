@@ -1,0 +1,6 @@
+apiVersion: v2
+name: olm
+description: Operator Lifecycle Manager
+type: application
+version: 0.1.0-dev
+appVersion: v0.24.0
