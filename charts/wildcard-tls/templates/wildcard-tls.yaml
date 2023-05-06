@@ -1,0 +1,16 @@
+{{- $releaseName := .Release.Name -}}
+{{- $tlsCert := required ".Values.tlsCrtBase64 is required" .Values.tlsCrtBase64 -}}
+{{- $tlsKey := required ".Values.tlsKeyBase64 is required" .Values.tlsKeyBase64 -}}
+{{- $targetNamespaces := required ".Values.targetNamespaces is required" .Values.targetNamespaces -}}
+{{- range $targetNamespaces }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ $releaseName }}
+  namespace: {{ . }}
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ $tlsCert }}
+  tls.key: {{ $tlsKey }}
+{{- end }}

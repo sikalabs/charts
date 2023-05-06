@@ -1,0 +1,7 @@
+# ===== Required =====
+targetNamespaces:
+# targetNamespaces:
+#   - foo
+#   - bar
+tlsCrtBase64:
+tlsKeyBase64:
