@@ -1,0 +1,20 @@
+rbacRules:
+  #- name: kubernetes-admin
+  #  apiGroups:
+  #    - "*"
+  #  resources:
+  #    - "*"
+  #  verbs:
+  #    - "*"
+  #  clusterWide: true
+  #  namespace: ""
+
+  #- name: kubernetes-ns-bar
+  #  apiGroups:
+  #    - "*"
+  #  resources:
+  #    - "*"
+  #  verbs:
+  #    - "*"
+  #  clusterWide: false
+  #  namespace: bar

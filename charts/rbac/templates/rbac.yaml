@@ -1,0 +1,38 @@
+{{- range .Values.rbacRules }}
+{{- $roleKind := ternary "ClusterRole" "Role" .clusterWide -}}
+{{- $roleBindingKind := ternary "ClusterRoleBinding" "RoleBinding" .clusterWide -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ $roleKind }}
+metadata:
+  name: {{ .name }}
+  namespace: {{ .namespace }}
+rules:
+  - apiGroups:
+      {{- range $apiGroup := .apiGroups }}
+      - {{ $apiGroup | quote }}
+      {{- end }}
+    resources:
+      {{- range $resource := .resources }}
+      - {{ $resource | quote }}
+      {{- end }}
+    verbs:
+      {{- range $verb := .verbs }}
+      - {{ $verb | quote }}
+      {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ $roleBindingKind }}
+metadata:
+  name: {{ .name }}
+  namespace: {{ .namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: {{ $roleKind }}
+  name: {{ .name }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ .name }}
+---
+{{- end }}
