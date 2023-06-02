@@ -1,0 +1,197 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  terraform.tf: |
+    terraform {
+      backend "kubernetes" {
+        secret_suffix     = "state"
+        in_cluster_config = true
+      }
+      required_providers {
+        keycloak = {
+          source = "mrparkers/keycloak"
+        }
+      }
+    }
+
+    provider "keycloak" {
+      client_id                = "admin-cli"
+      url                      = "http://keycloak.keycloak"
+      username                 = "{{ .Values.keycloak.adminUsername }}"
+      password                 = "{{ .Values.keycloak.adminPassword }}"
+      tls_insecure_skip_verify = true
+    }
+{{- if .Values.keycloak.realms }}
+  {{ range $realm := .Values.keycloak.realms }}
+    resource "keycloak_realm" {{ $realm.name | quote }} {
+      realm                    = {{ $realm.name | quote }}
+      enabled                  = true
+    display_name_html        = {{ $realm.htmlName | quote }}
+    login_with_email_allowed = true
+    reset_password_allowed   = true
+    remember_me              = true
+    }
+
+    resource "keycloak_realm_events" {{ $realm.name | quote }} {
+    realm_id = keycloak_realm.{{ $realm.name}}.id
+
+    events_enabled    = true
+    events_expiration = 3600
+
+    admin_events_enabled         = true
+    admin_events_details_enabled = true
+    }
+
+    resource "keycloak_openid_client_scope" "{{ $realm.name }}_groups" {
+    realm_id               = keycloak_realm.{{ $realm.name }}.id
+    name                   = "groups"
+    include_in_token_scope = true
+    gui_order              = 1
+    }
+
+    resource "keycloak_openid_group_membership_protocol_mapper" "{{ $realm.name }}_groups" {
+    realm_id        = keycloak_realm.{{ $realm.name }}.id
+    client_scope_id = keycloak_openid_client_scope.{{ $realm.name }}_groups.id
+    name            = "groups"
+    claim_name      = "groups"
+    full_path       = false
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.clients }}
+  {{ range $client := .Values.keycloak.clients }}
+    resource "keycloak_openid_client" {{ $client.name | quote }} {
+    realm_id              = keycloak_realm.{{ $client.realmName }}.id
+    client_id             = {{ $client.name | quote }}
+    name                  = {{ $client.name | quote }}
+    enabled               = true
+    access_type           = {{ $client.accessType | quote }}
+    client_secret         = {{ $client.secret | quote }}
+    standard_flow_enabled = true
+    valid_redirect_uris = [
+    {{- range $redirectUri := $client.redirectUris }}
+        {{ $redirectUri | quote }},
+    {{- end }}
+    ]
+    }
+
+    resource "keycloak_openid_client_default_scopes" {{ $client.name | quote }} {
+    realm_id  = keycloak_realm.{{ $client.realmName }}.id
+    client_id = keycloak_openid_client.{{ $client.name }}.id
+    default_scopes = [
+    {{- range $scope := $client.scopes }}
+        {{ $scope | quote }},
+    {{- end }}
+    ]
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.audienceMappers }}
+  {{ range $audienceMapper := .Values.keycloak.audienceMappers }}
+    resource "keycloak_openid_audience_protocol_mapper" {{ $audienceMapper.name | quote }} {
+    realm_id  = keycloak_realm.{{ $audienceMapper.realmName }}.id
+    client_id = keycloak_openid_client.{{ $audienceMapper.clientName }}.id
+    name      = {{ $audienceMapper.name | quote }}
+    included_client_audience = keycloak_openid_client.{{ $audienceMapper.clientName }}.client_id
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.groups }}
+  {{ range $group := .Values.keycloak.groups }}
+    resource "keycloak_group" {{ $group.name | quote }} {
+    realm_id = keycloak_realm.{{ $group.realmName }}.id
+    name     = {{ $group.name | quote }}
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.users }}
+  {{ range $user := .Values.keycloak.users }}
+    resource "keycloak_user" {{ $user.username | quote }} {
+    realm_id       = keycloak_realm.{{ $user.realmName }}.id
+    username       = {{ $user.username | quote }}
+    enabled        = true
+    email          = {{ $user.email | quote }}
+    email_verified = true
+    initial_password {
+    value     = {{ $user.initialPassword | quote }}
+    temporary = true
+    }
+    }
+
+    resource "keycloak_user_groups" {{ $user.username | quote }} {
+    realm_id = keycloak_realm.{{ $user.realmName }}.id
+    user_id  = keycloak_user.{{ $user.username }}.id
+    group_ids = [
+      {{- range $userGroup := $user.userGroups }}
+    keycloak_group.{{ $userGroup }}.id,
+      {{- end }}
+    ]
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.userFederations }}
+  {{ range $userFederation := .Values.keycloak.userFederations }}
+    resource "keycloak_ldap_user_federation" {{ $userFederation.name | quote }} {
+    name     = {{ $userFederation.name | quote }}
+    realm_id = keycloak_realm.{{ $userFederation.realmName }}.id
+    enabled  = true
+
+    username_ldap_attribute = {{ $userFederation.usernameLdapAttribute | quote }}
+    rdn_ldap_attribute      = {{ $userFederation.rndLdapAttribute | quote }}
+    uuid_ldap_attribute     = {{ $userFederation.uuidLdapAttribute | quote }}
+    user_object_classes     = [
+      {{- range $userObjectClass := $userFederation.userObjectClasses }}
+        {{ $userObjectClass | quote }},
+      {{- end }}
+    ]
+
+    connection_url          = {{ $userFederation.connectionUrl | quote }}
+    users_dn                = {{ $userFederation.userDN | quote }}
+    bind_dn                 = {{ $userFederation.bindDN | quote }}
+    bind_credential         = {{ $userFederation.bindCredentials | quote }}
+
+    edit_mode               = {{ $userFederation.editMode | quote }}
+    search_scope            = {{ $userFederation.searchScope | quote }}
+    full_sync_period        = {{ $userFederation.fullSyncPeriod }}
+    changed_sync_period     = {{ $userFederation.changeSyncPeriod }}
+
+    connection_timeout      = "5s"
+    read_timeout            = "10s"
+    trust_email             = {{ $userFederation.trustEmail }}
+
+    cache {
+    policy                = "EVICT_DAILY"
+    eviction_hour         = {{ $userFederation.cache.evictionHour }}
+    eviction_minute       = {{ $userFederation.cache.evictionMinute }}
+    }
+    }
+  {{ end }}
+{{- end }}
+{{- if .Values.keycloak.ldapGroupMappers }}
+  {{ range $ldapGroupMapper := .Values.keycloak.ldapGroupMappers }}
+    resource "keycloak_ldap_group_mapper" {{ $ldapGroupMapper.name | quote }} {
+    realm_id                       = keycloak_realm.{{ $ldapGroupMapper.realmName }}.id
+    ldap_user_federation_id        = keycloak_ldap_user_federation.{{ $ldapGroupMapper.userFederationName }}.id
+    name                           = {{ $ldapGroupMapper.name | quote }}
+
+    ldap_groups_dn                 = {{ $ldapGroupMapper.groupsDN | quote }}
+    group_name_ldap_attribute      = {{ $ldapGroupMapper.groupNameLdapAttribute | quote }}
+    group_object_classes           = [
+      {{- range $groupObjectClass := $ldapGroupMapper.groupObjectClasses }}
+        {{ $groupObjectClass | quote }},
+      {{- end }}
+    ]
+    membership_attribute_type      = {{ $ldapGroupMapper.membershipAttributeType | quote }}
+    membership_ldap_attribute      = {{ $ldapGroupMapper.membershipLdapAttribute | quote }}
+    membership_user_ldap_attribute = {{ $ldapGroupMapper.membershipUserLdapAttribute | quote }}
+    memberof_ldap_attribute        = {{ $ldapGroupMapper.memberOfLdapAttribute | quote }}
+
+    preserve_group_inheritance     = {{ $ldapGroupMapper.preserveGroupInheritance }}
+    mode                           = {{ $ldapGroupMapper.mode | quote }}
+    user_roles_retrieve_strategy   = {{ $ldapGroupMapper.userGroupsRetrieveStrategy | quote }}
+    }
+  {{ end }}
+{{- end }}

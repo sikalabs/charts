@@ -1,0 +1,99 @@
+# ===== Optional =====
+image: hashicorp/terraform:1.4
+env: {}
+# env:
+#   TERRAFORM_INIT_EXTRA_ARGS: "..."
+#   TERRAFORM_APPLY_EXTRA_ARGS: "..."
+
+# Init Container (e.g.: wait for something to be ready)
+initContainerImage:
+initContainerArgs:
+# initContainerImage: sikalabs/slu:v0.66.0
+# initContainerArgs:
+#   - sh
+#   - -c
+#   - slu wait-for tcp -a keycloak.keycloak:8000
+keycloak:
+  # adminUsername: admin
+  # adminPassword: admin
+  adminUsername:
+  adminPassword:
+
+  # realms:
+    # - name: awesome
+    #   htmlName: <h1><br>awesome SSO<br></h1>
+  realms: []
+
+  # clients:
+  #   - name: super
+  #     realmName: awesome
+  #     accessType: PUBLIC
+  #     secret: salkanjslkaslkxcsa
+  #     redirectUris:
+  #       - "*"
+  #     scopes:
+  #       - groups
+  #       - profile
+  #       - email
+  clients: []
+
+  # audienceMappers:
+  #   - name: audience
+  #     realmName: awesome
+  #     clientName: grafana
+  audienceMappers: []
+
+  # groups:
+  #   - name: admin
+  #     realmName: awesome
+  groups: []
+
+  # users:
+  #   - username: admin
+  #     email: admin@awesome.com
+  #     initialPassword: a
+  #     realmName: awesome
+  #     userGroups:
+  #       - admin
+  users: []
+
+  # userFederations:
+  #   - name: awesome-ad1
+  #     realmName: awesome
+  #     usernameLdapAttribute: cn
+  #     rndLdapAttribute: cn
+  #     uuidLdapAttribute: objectGUID
+  #     userObjectClasses:
+  #       - "user"
+  #       - "person"
+  #       - "organizationalPerson"
+  #     connectionUrl: "ldap://ad01.example.com:389"
+  #     userDN: "ou=users,ou=test,ou=example,dc=example,dc=com"
+  #     bindDN: ldap_user
+  #     bindCredentials: admin123
+  #     editMode: READ_ONLY
+  #     searchScope: SUBTREE
+  #     fullSyncPeriod: 604800
+  #     changeSyncPeriod: 86400
+  #     trustEmail: true
+  #     cache:
+  #       evictionHour: 00
+  #       evictionMinute: 00
+  userFederations: []
+
+  # ldapGroupMappers:
+  #   - name: group-mapper
+  #     realmName: awesome
+  #     userFederationName: awesome-ad1
+  #     groupsDN: "OU=OCP,OU=apps,OU=test,OU=example,DC=example,DC=com"
+  #     groupNameLdapAttribute: cn
+  #     groupObjectClasses:
+  #       - "group"
+  #     membershipAttributeType: DN
+  #     membershipLdapAttribute: member
+  #     membershipUserLdapAttribute: cn
+  #     memberOfLdapAttribute: memberOf
+  #     preserveGroupInheritance: true
+  #     mode: READ_ONLY
+  #     userGroupsRetrieveStrategy: LOAD_GROUPS_BY_MEMBER_ATTRIBUTE
+  ldapGroupMappers: []

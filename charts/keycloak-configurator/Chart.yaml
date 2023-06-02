@@ -1,0 +1,5 @@
+apiVersion: v2
+name: keycloak-configurator
+description: Configure Keycloak using Terraform
+type: application
+version: 0.1.0-dev
