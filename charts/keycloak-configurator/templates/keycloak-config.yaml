@@ -18,10 +18,10 @@ data:
     }
 
     provider "keycloak" {
-      client_id                = "admin-cli"
-      url                      = "http://keycloak.keycloak"
-      username                 = "{{ .Values.keycloak.adminUsername }}"
-      password                 = "{{ .Values.keycloak.adminPassword }}"
+      client_id                = {{ .Values.keycloak.clientId | quote }}
+      url                      = {{ .Values.keycloak.url | quote }}
+      username                 = {{ .Values.keycloak.adminUsername | quote }}
+      password                 = {{ .Values.keycloak.adminPassword | quote }}
       tls_insecure_skip_verify = true
     }
 {{- if .Values.keycloak.realms }}

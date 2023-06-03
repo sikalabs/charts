@@ -14,9 +14,14 @@ initContainerArgs:
 #   - -c
 #   - slu wait-for tcp -a keycloak.keycloak:8000
 keycloak:
+
+  # clientId: admin-cli
+  clientId:
+  # url: http://keycloak.keycloak
+  url:
   # adminUsername: admin
-  # adminPassword: admin
   adminUsername:
+  # adminPassword: admin
   adminPassword:
 
   # realms:
