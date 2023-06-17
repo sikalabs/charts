@@ -1,7 +1,8 @@
 # ===== Required =====
-targetNamespaces:
-# targetNamespaces:
-#   - foo
-#   - bar
-tlsCrtBase64:
-tlsKeyBase64:
+certificates:
+  - targetNamespaces:
+      # - foo
+      # - bar
+    name:
+    tlsCrtBase64:
+    tlsKeyBase64:
