@@ -1,5 +1,0 @@
-apiVersion: v2
-name: wildcard-tls
-description: Wildcard TLS certificate
-type: application
-version: 0.3.0-dev
