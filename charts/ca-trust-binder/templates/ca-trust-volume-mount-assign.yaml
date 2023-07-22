@@ -1,0 +1,33 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: {{ .Release.Name }}-volume-mount
+spec:
+  applyTo:
+    - groups: [ "" ]
+      kinds: [ "Pod" ]
+      versions: [ "v1" ]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: [ "*" ]
+        kinds: [ "Pod" ]
+    {{- if .Values.includedNamespaces }}
+    namespaces:
+      {{- range $includedNamespace := .Values.includedNamespaces }}
+      - {{ $includedNamespace | quote }}
+      {{- end }}
+    {{- end}}
+    {{- if .Values.excludedNamespaces }}
+    excludedNamespaces:
+      {{- range $excludedNamespace := .Values.excludedNamespaces }}
+      - {{ $excludedNamespace | quote }}
+      {{- end }}
+    {{- end }}
+  location: "spec.containers[name:*].volumeMounts[name:{{ .Release.Name }}]"
+  parameters:
+    assign:
+      value:
+        mountPath: {{ .Values.trustMountPath }}
+        name: {{ .Release.Name }}
+        readOnly: true

@@ -1,0 +1,38 @@
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: {{ .Release.Name }}-volume
+spec:
+  applyTo:
+    - groups: [ "" ]
+      kinds: [ "Pod" ]
+      versions: [ "v1" ]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: [ "*" ]
+        kinds: [ "Pod" ]
+    {{- if .Values.includedNamespaces }}
+    namespaces:
+      {{- range $includedNamespace := .Values.includedNamespaces }}
+      - {{ $includedNamespace | quote }}
+      {{- end }}
+    {{- end}}
+    {{- if .Values.excludedNamespaces }}
+    excludedNamespaces:
+      {{- range $excludedNamespace := .Values.excludedNamespaces }}
+      - {{ $excludedNamespace | quote }}
+      {{- end }}
+    {{- end }}
+  location: "spec.volumes[name:{{ .Release.Name }}]"
+  parameters:
+    assign:
+      value:
+        name: {{ .Release.Name }}
+        configMap:
+          name: {{ .Release.Name }}-bundle
+          defaultMode: 0644
+          optional: false
+          items:
+            - key: {{ .Release.Name }}
+              path: {{ .Release.Name }}

@@ -1,0 +1,21 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: {{ .Release.Name }}-bundle
+spec:
+  sources:
+    - useDefaultCAs: {{ .Values.usePublicCAs }}
+{{- if .Values.customCAs }}
+    - inLine: |
+{{ .Values.customCAs | indent 8 }}
+{{- end }}
+  target:
+    configMap:
+      key: {{ .Release.Name }}
+    namespaceSelector:
+    {{- if .Values.includedNamespaces }}
+      matchLabels:
+      {{- range $includedNamespace := .Values.includedNamespaces }}
+        name: {{ $includedNamespace | quote }}
+      {{- end }}
+    {{- end }}

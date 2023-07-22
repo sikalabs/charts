@@ -1,0 +1,32 @@
+usePublicCAs: true
+#customCAs: |
+#  -----BEGIN CERTIFICATE-----
+#  MIIDaDCCAlACCQCOavb/li/uDDANBgkqhkiG9w0BAQsFADB2MQswCQYDVQQGEwJV
+#  UzETMBEGA1UECAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNU2FuIEZyYW5jaXNjbzEO
+#  MAwGA1UECgwFTXlPcmcxDjAMBgNVBAsMBU15QXBwMRowGAYDVQQDDBFteWNhLm15
+#  ZG9tYWluLmNvbTAeFw0yMzA3MjExNDUzMTFaFw0yNjA1MTAxNDUzMTFaMHYxCzAJ
+#  BgNVBAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMRYwFAYDVQQHDA1TYW4gRnJh
+#  bmNpc2NvMQ4wDAYDVQQKDAVNeU9yZzEOMAwGA1UECwwFTXlBcHAxGjAYBgNVBAMM
+#  EW15Y2EubXlkb21haW4uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+#  AQEAvL9+GSLdRGgx6dbwZQtg3yGn1pF5jDKlSAcQlCM1mWN+FUdiHG8FHy5vd/H9
+#  XBpk1XSIFyy1aao38kkdWzi85bC2gkvbVCHfZz9Exn2w7SZ0aKvSEArKnucDyRxb
+#  g/clOONdr3kJDNoekfxIA2OnvPN8p0w1poDrT/czEBDxLf2AnybpoNe8hwJg1n76
+#  owDx4gjCl8sLh94f6NYpDLCR8U2uQmd+KZKpZVOkUYR3qiLhEcj7Wpb6J2T550uv
+#  Ldqult+VES7hQni3jsIHHk1hwPEfcqJwT/lgoYbwF1ZnLhkcQMJDPXIK+qEY7Pqs
+#  cCH4HHKW6RJ6ZHZBUe6rqoANPwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCJZzle
+#  cSntZIbqsmRhkGeAfxu/Yn0tArPFZeoc7p6/taN4EAm0nIwp46Xqb/TgAzcvm/fe
+#  Sp2T4sFTPkBVPl2jmJrtSsBZLBwyL4HOSfhqE09qiNnL5OyRRoXZ65dTgaKCN3rm
+#  UYER9yao2WGj+qD3U04XFb6Uw8Eta07yKVKcNxQ5erclL1UyTfof/+VOWrUJiuaJ
+#  3aYA82R2tki+u8fbrGWzPsAuKl8rWl58wigtZgy5QYYsKqeNMYj3PAoh4xt1pFMH
+#  EVgPXNc3RYKEGmLgu+Sr7ntKzfgkuGBZbh1e/JQ3TKRL7ia5wcoX41jrTmsODmdI
+#  BD1clgFNTn23sGo5
+#  -----END CERTIFICATE-----
+customCAs:
+trustMountPath: /etc/ssl/certs/
+excludedNamespaces:
+#  - "kube-system"
+#  - "kube-public"
+#  - "kube-node-lease"
+includedNamespaces:
+#  - "awesome"
+#  - "super"
