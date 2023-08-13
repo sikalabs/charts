@@ -1,3 +1,14 @@
 # Required
 runnerRegistrationToken:
 gitlabUrl:
+
+# Optional
+# configToml: |
+#   [[runners]]
+#   [runners.kubernetes]
+#     [runners.kubernetes.volumes]
+#       [[runners.kubernetes.volumes.empty_dir]]
+#         name = "empty-dir"
+#         mount_path = "/path/to/empty_dir"
+#         medium = "Memory"
+configToml:

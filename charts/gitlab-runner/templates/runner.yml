@@ -6,3 +6,6 @@ spec:
   gitlabUrl: {{ required ".Values.gitlabUrl is required" .Values.gitlabUrl }}
   buildImage: alpine
   token: {{ .Release.Name }}
+  {{- if .Values.configToml }}
+  config: {{ .Release.Name }}
+  {{- end }}
