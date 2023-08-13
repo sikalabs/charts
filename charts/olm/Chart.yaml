@@ -3,4 +3,4 @@ name: olm
 description: Operator Lifecycle Manager
 type: application
 version: 0.2.0-dev
-appVersion: v0.24.0
+appVersion: v0.25.0
