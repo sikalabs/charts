@@ -22,7 +22,12 @@ usePublicCAs: true
 #  BD1clgFNTn23sGo5
 #  -----END CERTIFICATE-----
 customCAs:
-trustMountPath: /etc/ssl/certs/
+trustMounts:
+  - path: /etc/ssl/certs/
+    name: etc-ssl
+  - path: /etc/pki/tls/certs/
+    name: etc-pki
+
 excludedNamespaces:
 #  - "kube-system"
 #  - "kube-public"

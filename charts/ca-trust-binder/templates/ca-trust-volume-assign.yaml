@@ -1,7 +1,11 @@
+{{ $releaseName := .Release.Name }}
+{{ $includedNamespaces := .Values.includedNamespaces }}
+{{ $excludedNamespaces := .Values.excludedNamespaces }}
+{{- range $trustMount := .Values.trustMounts }}
 apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
-  name: {{ .Release.Name }}-volume
+  name: {{ $trustMount.name }}-volume
 spec:
   applyTo:
     - groups: [ "" ]
@@ -12,27 +16,29 @@ spec:
     kinds:
       - apiGroups: [ "*" ]
         kinds: [ "Pod" ]
-    {{- if .Values.includedNamespaces }}
+    {{- if $includedNamespaces }}
     namespaces:
-      {{- range $includedNamespace := .Values.includedNamespaces }}
+      {{- range $includedNamespace := $includedNamespaces }}
       - {{ $includedNamespace | quote }}
       {{- end }}
     {{- end}}
-    {{- if .Values.excludedNamespaces }}
+    {{- if $excludedNamespaces }}
     excludedNamespaces:
-      {{- range $excludedNamespace := .Values.excludedNamespaces }}
+      {{- range $excludedNamespace := $excludedNamespaces }}
       - {{ $excludedNamespace | quote }}
       {{- end }}
     {{- end }}
-  location: "spec.volumes[name:{{ .Release.Name }}]"
+  location: "spec.volumes[name:{{ $trustMount.name }}]"
   parameters:
     assign:
       value:
-        name: {{ .Release.Name }}
+        name: {{ $trustMount.name }}
         configMap:
-          name: {{ .Release.Name }}-bundle
+          name: {{ $releaseName }}-bundle
           defaultMode: 0644
           optional: false
           items:
-            - key: {{ .Release.Name }}
-              path: {{ .Release.Name }}
+            - key: "ca-bundle.crt"
+              path: "ca-bundle.crt"
+---
+{{- end }}

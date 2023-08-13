@@ -11,7 +11,7 @@ spec:
 {{- end }}
   target:
     configMap:
-      key: {{ .Release.Name }}
+      key: "ca-bundle.crt"
     namespaceSelector:
     {{- if .Values.includedNamespaces }}
       matchLabels:

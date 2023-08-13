@@ -1,7 +1,10 @@
+{{ $includedNamespaces := .Values.includedNamespaces }}
+{{ $excludedNamespaces := .Values.excludedNamespaces }}
+{{- range $trustMount := .Values.trustMounts }}
 apiVersion: mutations.gatekeeper.sh/v1
 kind: Assign
 metadata:
-  name: {{ .Release.Name }}-volume-mount
+  name: {{ $trustMount.name }}-volume-mount
 spec:
   applyTo:
     - groups: [ "" ]
@@ -12,22 +15,24 @@ spec:
     kinds:
       - apiGroups: [ "*" ]
         kinds: [ "Pod" ]
-    {{- if .Values.includedNamespaces }}
+    {{- if $includedNamespaces }}
     namespaces:
       {{- range $includedNamespace := .Values.includedNamespaces }}
       - {{ $includedNamespace | quote }}
       {{- end }}
     {{- end}}
-    {{- if .Values.excludedNamespaces }}
+    {{- if $excludedNamespaces }}
     excludedNamespaces:
-      {{- range $excludedNamespace := .Values.excludedNamespaces }}
+      {{- range $excludedNamespace := $excludedNamespaces }}
       - {{ $excludedNamespace | quote }}
       {{- end }}
     {{- end }}
-  location: "spec.containers[name:*].volumeMounts[name:{{ .Release.Name }}]"
+  location: "spec.containers[name:*].volumeMounts[name:{{ $trustMount.name }}]"
   parameters:
     assign:
       value:
-        mountPath: {{ .Values.trustMountPath }}
-        name: {{ .Release.Name }}
+        mountPath: {{ $trustMount.path }}
+        name: {{ $trustMount.name }}
         readOnly: true
+---
+{{- end }}
