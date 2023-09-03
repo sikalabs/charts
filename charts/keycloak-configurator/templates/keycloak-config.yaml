@@ -147,6 +147,9 @@ data:
         {{ $userObjectClass | quote }},
       {{- end }}
     ]
+    {{- if $userFederation.userLdapFilter}}
+    custom_user_search_filter = "({{ $userFederation.userLdapFilter }})"
+    {{- end }}
 
     connection_url          = {{ $userFederation.connectionUrl | quote }}
     users_dn                = {{ $userFederation.userDN | quote }}

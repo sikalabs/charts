@@ -72,6 +72,7 @@ keycloak:
   #       - "user"
   #       - "person"
   #       - "organizationalPerson"
+  #     userLdapFilter: CD,cD,CD
   #     connectionUrl: "ldap://ad01.example.com:389"
   #     userDN: "ou=users,ou=test,ou=example,dc=example,dc=com"
   #     bindDN: ldap_user
