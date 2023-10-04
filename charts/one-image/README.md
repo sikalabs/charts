@@ -39,3 +39,11 @@ basicAuth:
   username: null (default)
   password: null (default)
 ```
+
+#### LivenessProbe
+You can define livenessProbe path and port in values.yaml
+```
+livenessProbe:
+  path: / (default)
+  port: http (default)
+```

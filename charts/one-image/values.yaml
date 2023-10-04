@@ -21,3 +21,6 @@ containerEnv: {}
 basicAuth:
   username: null
   password: null
+livenessProbe:
+  path: /
+  port: http
