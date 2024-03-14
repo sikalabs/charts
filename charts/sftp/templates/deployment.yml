@@ -34,7 +34,7 @@ spec:
           image: {{  .Values.image }}
           ports:
             - name: ssh
-              containerPort: 22
+              containerPort: {{ .Values.port }}
           env:
             - name: ROOT_PASSWORD
               value: {{ required ".Values.ROOT_PASSWORD is required" .Values.ROOT_PASSWORD | quote }}

@@ -8,4 +8,5 @@ affinityValue:
 image: ghcr.io/sikalabs/sshd
 
 serviceType: ClusterIP # NodePort, LoadBalancer, ClusterIP
+port: 22
 nodePort:
