@@ -7,7 +7,9 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-    - port: {{ .Values.port }}
+    - name: ssh
+      port: {{ .Values.port }}
+      targetPort: {{ .Values.port }}
       nodePort: {{ .Values.nodePort }}
   selector:
     release: {{ .Release.Name }}
