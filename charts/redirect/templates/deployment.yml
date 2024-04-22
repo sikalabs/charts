@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: main
-          image: sikalabs/redirect-server:v0.1.0
+          image: {{ .Values.image }}
           imagePullPolicy: Always
           args:
             - redirect-server
