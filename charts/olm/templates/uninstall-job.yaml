@@ -3,11 +3,17 @@ kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-uninstall-sa
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ .Release.Name }}-uninstall-cr
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
 rules:
   - apiGroups: [ "*" ]
     resources: [ "*" ]
@@ -17,6 +23,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: {{ .Release.Name }}-uninstall-crb
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-uninstall-sa
@@ -33,6 +42,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     spec:
@@ -44,13 +54,5 @@ spec:
             - sh
             - -c
             - |
-              kubectl delete apiservices.apiregistration.k8s.io v1.packages.operators.coreos.com && \
-              kubectl delete -f /tmp/olm.yaml
-          volumeMounts:
-            - name: {{ .Release.Name }}-config
-              mountPath: /tmp
-      volumes:
-        - name: {{ .Release.Name }}-config
-          configMap:
-            name: {{ .Release.Name }}-config
+              kubectl delete csv packageserver -n olm
       restartPolicy: Never
