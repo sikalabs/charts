@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm/{{ .Release.Name }}: {{include (print $.Template.BasePath "/config.yml") . | sha256sum}}
+        checksum-cm-{{ .Release.Name }}: {{include (print $.Template.BasePath "/config.yml") . | sha256sum}}
       labels:
         release: {{ .Release.Name }}
     spec:
