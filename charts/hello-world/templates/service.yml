@@ -4,11 +4,15 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     release: {{ .Release.Name }}
+    app: {{ .Release.Name }}
 spec:
   type: ClusterIP
   ports:
     - port: 80
       name: http
       targetPort: http
+    - port: 8001
+      name: metrics
+      targetPort: metrics
   selector:
     app: {{ .Release.Name }}
