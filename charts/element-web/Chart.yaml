@@ -1,0 +1,4 @@
+apiVersion: v1
+name: element-web
+version: 0.1.0-dev
+description: Element, client for Matrix protocol
