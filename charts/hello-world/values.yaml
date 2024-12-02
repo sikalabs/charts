@@ -5,6 +5,7 @@ host: null
 path: /
 clusterIssuer: letsencrypt
 TEXT:
+TEXT_SUFFIX:
 COLOR:
 BACKGROUND_COLOR:
 # ingressExtraAnnotations:

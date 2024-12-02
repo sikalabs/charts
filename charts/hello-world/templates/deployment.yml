@@ -32,6 +32,10 @@ spec:
             - name: "TEXT"
               value: {{ .Values.TEXT | quote }}
           {{ end }}
+          {{ if .Values.TEXT_SUFFIX }}
+            - name: "TEXT_SUFFIX"
+              value: {{ .Values.TEXT_SUFFIX | quote }}
+          {{ end }}
           {{ if .Values.COLOR }}
             - name: "COLOR"
               value: {{ .Values.COLOR | quote }}
