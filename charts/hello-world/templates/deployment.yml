@@ -15,6 +15,10 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      {{ if .Values.imagePullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      {{ end }}
       containers:
         - name: main
           image: {{  .Values.image }}

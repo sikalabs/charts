@@ -14,3 +14,4 @@ ingressClassName: nginx
 ingressExtraAnnotations: {}
 tlsKeyBase64: null
 tlsCrtBase64: null
+imagePullSecret: null
