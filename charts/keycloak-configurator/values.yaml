@@ -95,6 +95,7 @@ keycloak:
   #     groupNameLdapAttribute: cn
   #     groupObjectClasses:
   #       - "group"
+  #     groupsLdapFilter: CD,cD,CD
   #     membershipAttributeType: DN
   #     membershipLdapAttribute: member
   #     membershipUserLdapAttribute: cn
