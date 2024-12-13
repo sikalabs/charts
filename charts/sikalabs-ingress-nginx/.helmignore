@@ -1,0 +1,6 @@
+/*.tgz
+.vscode
+*.local.txt
+*.local.sh
+*.local.yaml
+Makefile
