@@ -1,7 +1,7 @@
 apiVersion: v2
 description: SikaLabs wrapper for ingress-nginx Helm chart
 name: sikalabs-ingress-nginx
-version: 0.1.0-dev
+version: 0.1.0
 dependencies:
   - name: ingress-nginx
     version: 4.0.13
