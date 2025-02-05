@@ -24,7 +24,7 @@ spec:
              value: "{{ required ".Values.POSTGRES_PASSWORD is required" .Values.POSTGRES_PASSWORD}}"
           volumeMounts:
            - name: postgres
-             mountPath: "/var/lib/postgresql/data"
+             mountPath: "/var/lib/postgresql"
   volumeClaimTemplates:
     - metadata:
        name: postgres
