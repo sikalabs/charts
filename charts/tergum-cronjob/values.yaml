@@ -8,4 +8,4 @@ image: sikalabs/tergum:v0.31.1
 useV2: false
 mountRootPath: false
 existingSecret:
-expandEnv:
+expandEnv: false
