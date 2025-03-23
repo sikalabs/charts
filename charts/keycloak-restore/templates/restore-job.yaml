@@ -85,7 +85,7 @@ spec:
             - >
               echo "Starting restore from backup...";
               gunzip -c /backup/backup.gz;
-              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -p $PGPORT -U $PGUSER -f /backup/backup postgres;
+              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -p $PGPORT -U $PGUSER -f /backup/backup;
               echo "Restore complete.";
           volumeMounts:
             - name: backup-volume
