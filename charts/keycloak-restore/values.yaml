@@ -1,0 +1,35 @@
+imagePullPolicy: "IfNotPresent"
+
+awscli:
+  imageRepository: "amazon/aws-cli"
+  imageTag: "2.25.1"
+
+postgres:
+  imageRepository: "bitnami/postgresql"
+  imageTag: "17.2.0-debian-12-r6"
+
+# If the secretConfigName is set, the values in the secretConfig will be ignored
+secretConfigName: ""
+secretConfig:
+  ## Example secretConfig:
+  # accessKeyId: "accessKeyId"
+  # accessSecretKey: "accessSecretKey"
+  # region: "fra1"
+  # endpoint: "https://fra1.digitaloceanspaces.com"
+  # bucket: "my-backups"
+  # file: "keycloak/keycloak.2025-03-22_12-59-07_dkn.full.gz"
+  # postgresHost: "keycloak-postgresql.keycloak"
+  # postgresPort: "5432"
+  # postgresUser: "postgres"
+  # postgresPassword: "postgres"
+  # accessKeyId: "accessKeyId"
+  # accessSecretKey: "accessSecretKey"
+  region: ""
+  endpoint: ""
+  bucket: ""
+  file: ""
+  postgresHost: ""
+  postgresPort: ""
+  postgresUser: ""
+  postgresPassword: ""
+

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: keycloak-restore
+description: Helm chart for keycloak-restore process from S3 backup
+type: application
+version: 0.1.0-dev
