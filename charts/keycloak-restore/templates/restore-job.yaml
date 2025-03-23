@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-restore
+  namespace: {{ .Release.Namespace }}
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      # Define a shared emptyDir volume for the backup file
+      volumes:
+        - name: backup-volume
+          emptyDir: {}
+      initContainers:
+        - name: download-backup
+          image: "{{ .Values.awscli.imageRepository }}:{{ .Values.awscli.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: accessKeyId
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: accessSecretKey
+            - name: AWS_DEFAULT_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: region
+            - name: BACKUP_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: endpoint
+            - name: BACKUP_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: bucket
+            - name: BACKUP_FILE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: file
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              echo "Downloading backup file from S3 storage...";
+              aws --endpoint-url=$BACKUP_ENDPOINT s3 cp s3://$BACKUP_BUCKET/$BACKUP_FILE /backup/backup.gz;
+              echo "Download complete.";
+          volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+      containers:
+        - name: restore
+          image: "{{ .Values.postgres.imageRepository }}:{{ .Values.postgres.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: postgresPassword
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: postgresUser
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: postgresHost
+            - name: PGPORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: postgresPort
+          command: ["/bin/sh", "-c"]
+          args:
+            - >
+              echo "Starting restore from backup...";
+              gunzip -c /backup/backup.gz | psql -h $PGHOST -p $PGPORT -U $PGUSER;
+              echo "Restore complete.";
+          volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+      restartPolicy: Never
