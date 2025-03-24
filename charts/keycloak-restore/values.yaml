@@ -20,6 +20,7 @@ secretConfig:
   # file: "keycloak/keycloak.2025-03-22_12-59-07_dkn.full.gz"
   # postgresHost: "keycloak-postgresql.keycloak"
   # postgresPort: "5432"
+  # postgresDb: "bitnami_keycloak"
   # postgresUser: "postgres"
   # postgresPassword: "postgres"
   accessKeyId: ""
@@ -30,6 +31,7 @@ secretConfig:
   file: ""
   postgresHost: ""
   postgresPort: ""
+  postgresDb: ""
   postgresUser: ""
   postgresPassword: ""
 
