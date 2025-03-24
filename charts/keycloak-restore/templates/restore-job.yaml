@@ -80,12 +80,17 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secretConfigName | default .Release.Name }}
                   key: postgresPort
+            - name: PGDB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretConfigName | default .Release.Name }}
+                  key: postgresDb
           command: ["/bin/sh", "-c"]
           args:
             - >
               echo "Starting restore from backup...";
               gunzip /backup/backup.gz;
-              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -p $PGPORT -U $PGUSER -f /backup/backup;
+              PGPASSWORD=$PGPASSWORD psql -h $PGHOST -p $PGPORT -U $PGUSER -f /backup/backup $PGDB;
               echo "Restore complete.";
           volumeMounts:
             - name: backup-volume
