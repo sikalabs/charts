@@ -13,6 +13,7 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      enableServiceLinks: false
       containers:
       - name: element
         image: vectorim/element-web:latest
@@ -20,6 +21,9 @@ spec:
         - name: config-volume
           mountPath: /app/config.json
           subPath: config.json
+        env:
+        - name: ELEMENT_WEB_PORT
+          value: "80"
         ports:
         - containerPort: 80
           name: http
