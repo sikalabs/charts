@@ -7,6 +7,8 @@ image:
 
 replicas: 3
 
+updateStrategy: supervised
+
 superuserSecretName: ""
 
 storage:

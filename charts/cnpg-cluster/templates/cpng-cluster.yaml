@@ -10,7 +10,7 @@ spec:
   instances: {{ .Values.replicas }}
   startDelay: 300
   stopDelay: 300
-  primaryUpdateStrategy: supervised
+  primaryUpdateStrategy: {{ .Values.updateStrategy }}
 
   monitoring:
     enablePodMonitor: true
