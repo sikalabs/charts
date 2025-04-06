@@ -1,0 +1,7 @@
+apiVersion: v2
+name: cnpg-cluster
+description: CNPG.io PostreSQL Cluster with restore from S3
+version: 0.1.0-dev
+maintainers:
+  - name: Jozef Vojtek
+    email: jozef.vojtek@sikalabs.com
