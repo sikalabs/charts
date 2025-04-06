@@ -1,0 +1,139 @@
+description: "CNPG.io PostgreSQL Cluster"
+
+image:
+  repository: ghcr.io/cloudnative-pg/postgresql
+  tag: 16.4-41-bookworm
+  pullPolicy: IfNotPresent
+
+replicas: 3
+
+superuserSecretName: ""
+
+storage:
+  storageClass: ""
+  size: 1Gi
+  resizeInUseVolumes: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 500M
+  limits:
+    cpu: 1000m
+    memory: 1500M
+
+## Example:
+# affinity:
+#   topologyKey: "kubernetes.io/hostname"
+#   nodeSelector:
+#     node-role.kubernetes.io/database: "true"
+#   tolerations:
+#     - key: "Dedicated"
+#       operator: "Equal"
+#       value: "database"
+#       effect: "NoExecute"
+affinity:
+  topologyKey: "kubernetes.io/hostname"
+  nodeSelector: {}
+  tolerations: []
+
+## Example:
+# postgresql:
+#   params:
+#     max_connections: 100
+#     shared_buffers: 128MB
+#     work_mem: 4MB
+#     maintenance_work_mem: 64MB
+#     effective_cache_size: 512MB
+#     wal_level: hot_standby
+#     max_wal_senders: 5
+#     max_replication_slots: 5
+#     hot_standby: on
+#     log_destination: stderr
+#     logging_collector: on
+#     log_directory: pg_log
+#     log_filename: postgresql-%Y-%m-%d_%H%M%S.log
+#     log_truncate_on_rotation: on
+#     log_rotation_age: 1d
+#     log_rotation_size: 0
+#     log_min_duration_statement: 500
+#     log_checkpoints: on
+#     log_connections: on
+#     log_disconnections: on
+#   pgHba:
+#     - host all all 10.244.0.0/16 md5
+postgresql:
+  params: {}
+  pgHba: []
+
+## Example
+# initdb:
+#   enabled: true
+#   database: my-db
+#   owner: my-user
+#   secretName: my-db-secret
+initdb:
+  enabled: false
+  database: ""
+  owner: ""
+  secretName: ""
+
+## Example
+# recovery:
+#   enabled: true
+#   sourceName: origin-cluster-1
+#   s3:
+#     bucket: origin-cluster-1-backup-bucket
+#     endpointUrl: http://minio.minio:9000
+#     credentialsSecretName: s3-credentials
+#   pitr:
+#     enabled: true
+#     targetTime: "2025-01-01 01:00:00.00000+00"
+recovery:
+  enabled: false
+  sourceName: ""
+  s3:
+    bucket: ""
+    endpointUrl: ""
+    credentialsSecretName: ""
+  pitr:
+    enabled: false
+    targetTime: ""
+
+## Example
+# backup:
+#   enabled: true
+#   scheduleCron: "0 */2 * * * *"
+#   s3:
+#     bucket: backup-bucket
+#     endpointUrl: http://minio.minio:9000
+#     credentialsSecretName: s3-credentials
+## Note: walEncryption and dataEncryption can be AES256 and aws:kms
+#   walEncryption: AES256
+#   dataEncryption: AES256
+#   retentionPolicy: 1d
+backup:
+  enabled: false
+  scheduleCron: ""
+  s3:
+    bucket: ""
+    endpointUrl: ""
+    credentialsSecretName: ""
+  walEncryption: ""
+  dataEncryption: ""
+  retentionPolicy: ""
+
+pooler:
+  replicas: 3
+  ## Example
+  # service:
+  #   annotations:
+  #     metallb.universe.tf/address-pool: db-pool
+  #     metallb.universe.tf/loadBalancerIPs: 10.10.10.10
+  service:
+    annotations: {}
+  pgbouncer:
+    poolMode: session
+    params:
+      max_client_conn: "500"
+      default_pool_size: "10"

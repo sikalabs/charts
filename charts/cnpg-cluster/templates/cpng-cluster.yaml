@@ -1,0 +1,115 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  description: "{{ .Values.description }}"
+  imageName: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+  imagePullPolicy: {{ .Values.image.pullPolicy }}
+  instances: {{ .Values.replicas }}
+  startDelay: 300
+  stopDelay: 300
+  primaryUpdateStrategy: supervised
+
+  monitoring:
+    enablePodMonitor: true
+
+  postgresql:
+    {{- if .Values.postgresql.params }}
+    parameters:
+      {{- toYaml .Values.postgresql.params | nindent 6 }}
+    {{- end }}
+    {{- if .Values.postgresql.pgHba }}
+    pg_hba:
+      {{- toYaml .Values.postgresql.pgHba | nindent 6 }}
+    {{- end }}
+
+  bootstrap:
+    {{- if .Values.initdb.enabled }}
+    initdb:
+      database: {{ .Values.initdb.database }}
+      owner: {{ .Values.initdb.owner }}
+      secret:
+        name: {{ .Values.initdb.secretName }}
+    {{- end }}
+    {{- if .Values.recovery.enabled }}
+    recovery:
+      source: {{ .Values.recovery.sourceName }}
+      {{- if .Values.recovery.pitr.enabled }}
+      recoveryTarget:
+        targetTime: {{ .Values.recovery.pitr.targetTime | quote }}
+      {{- end }}
+    {{- end }}
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: {{ .Values.superuserSecretName }}
+
+  storage:
+    storageClass: {{ .Values.storage.storageClass }}
+    size: {{ .Values.storage.size }}
+    resizeInUseVolumes: {{ .Values.storage.resizeInUseVolumes }}
+
+  {{- if .Values.backup.enabled }}
+  backup:
+    barmanObjectStore:
+      serverName: {{ .Release.Name }}
+      destinationPath: s3://{{ .Values.backup.s3.bucket }}/
+      {{- if .Values.backup.s3.endpointUrl }}
+      endpointURL: {{ .Values.backup.s3.endpointUrl }}
+      {{- end }}
+      s3Credentials:
+        accessKeyId:
+          name: {{ .Values.backup.s3.credentialsSecretName }}
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: {{ .Values.backup.s3.credentialsSecretName }}
+          key: ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        encryption: {{ .Values.backup.walEncryption }}
+      data:
+        compression: gzip
+        encryption: {{ .Values.backup.dataEncryption }}
+        jobs: 2
+    retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
+  {{- end }}
+
+  {{- if .Values.recovery.enabled }}
+  externalClusters:
+    - name: {{ .Values.recovery.sourceName }}
+      barmanObjectStore:
+        destinationPath: s3://{{ .Values.recovery.s3.bucket }}/
+        {{- if .Values.recovery.s3.endpointUrl }}
+        endpointURL: {{ .Values.recovery.s3.endpointUrl }}
+        {{- end }}
+        s3Credentials:
+          accessKeyId:
+            name: {{ .Values.recovery.s3.credentialsSecretName }}
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: {{ .Values.recovery.s3.credentialsSecretName }}
+            key: ACCESS_SECRET_KEY
+  {{- end }}
+
+  resources:
+    requests:
+      memory: {{ .Values.resources.requests.memory }}
+      cpu: {{ .Values.resources.requests.cpu }}
+    limits:
+      memory: {{ .Values.resources.limits.memory }}
+      cpu: {{ .Values.resources.limits.cpu }}
+
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: {{ .Values.affinity.topologyKey }}
+    podAntiAffinityType: required
+    nodeSelector:
+      {{- toYaml .Values.affinity.nodeSelector | nindent 6 }}
+    tolerations:
+      {{- toYaml .Values.affinity.tolerations | nindent 6 }}
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: false

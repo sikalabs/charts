@@ -1,0 +1,28 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{ .Release.Name }}-pooler-rw
+  namespace: {{ .Release.Namespace }}
+spec:
+  cluster:
+    name: {{ .Release.Name }}
+  instances: {{ .Values.pooler.replicas }}
+  type: rw
+  serviceTemplate:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pooler-rw
+      {{- if .Values.pooler.service.annotations }}
+      annotations:
+        {{- toYaml .Values.pooler.service.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      type: LoadBalancer
+  pgbouncer:
+    poolMode: {{ .Values.pooler.pgbouncer.poolMode }}
+    {{- if .Values.pooler.pgbouncer.params }}
+    parameters:
+      {{- toYaml .Values.pooler.pgbouncer.params | nindent 6 }}
+    {{- end }}
+  monitoring:
+    enablePodMonitor: true
