@@ -134,6 +134,7 @@ pooler:
   #     metallb.universe.tf/loadBalancerIPs: 10.10.10.10
   service:
     annotations: {}
+    type: ClusterIP
   pgbouncer:
     poolMode: session
     params:
