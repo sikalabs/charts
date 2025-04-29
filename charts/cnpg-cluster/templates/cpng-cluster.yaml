@@ -43,14 +43,14 @@ spec:
     {{- end }}
 
   {{- if .Values.users }}
-  {{- range $user := .Values.users }}
   managed:
     roles:
+      {{- range $user := .Values.users }}
       - name: {{ $user.name }}
         login: true
         passwordSecret:
           name: {{ $user.passwordSecretName }}
-  {{- end }}
+      {{- end }}
   {{- end }}
 
   enableSuperuserAccess: true
