@@ -42,6 +42,16 @@ spec:
       {{- end }}
     {{- end }}
 
+  {{- if .Values.users }}
+  {{- range $user := .Values.users }}
+  managed:
+    roles:
+      - name: {{ $user.name }}
+        login: true
+        passwordSecret:
+          name: {{ $user.passwordSecretName }}
+  {{- end }}
+
   enableSuperuserAccess: true
   superuserSecret:
     name: {{ .Values.superuserSecretName }}

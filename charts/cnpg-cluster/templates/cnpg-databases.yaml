@@ -1,0 +1,17 @@
+{{- if .Values.databases }}
+{{ $releaseName := .Release.Name }}
+{{ $releaseNamespace := .Release.Namespace }}
+{{- range $db := .Values.databases }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ $db.name }}
+  namespace: {{ $releaseNamespace }}
+spec:
+  name: {{ $db.name }}
+  owner: {{ $db.owner }}
+  cluster:
+    name: {{ $releaseName }}
+---
+{{- end }}
+{{- end }}

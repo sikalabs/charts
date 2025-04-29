@@ -81,6 +81,22 @@ initdb:
   secretName: ""
 
 ## Example
+# databases:
+#   - name: "my-db"
+#     owner: "my-user"
+#   - name: "my-db-2"
+#     owner: "my-user-2"
+databases: []
+
+## Example
+# users:
+#   - name: "my-user"
+#     passwordSecretName: "my-user-secret"
+#   - name: "my-user-2"
+#     passwordSecretName: "my-user-2-secret"
+users: []
+
+## Example
 # recovery:
 #   enabled: true
 #   sourceName: origin-cluster-1
