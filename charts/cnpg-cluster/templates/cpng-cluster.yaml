@@ -51,6 +51,7 @@ spec:
         passwordSecret:
           name: {{ $user.passwordSecretName }}
   {{- end }}
+  {{- end }}
 
   enableSuperuserAccess: true
   superuserSecret:
