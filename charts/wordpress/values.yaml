@@ -10,4 +10,4 @@ image: wordpress
 storage: 1Gi
 proxyBodySize: 100m
 clusterIssuer: letsencrypt
-disableLivenessProbe: false
+disableProbes: false

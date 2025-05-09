@@ -38,16 +38,16 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          {{ if not .Values.disableLivenessProbe }}
+          {{ if not .Values.disableProbes }}
           livenessProbe:
             httpGet:
               path: /
               port: http
-          {{ end }}
           readinessProbe:
             httpGet:
               path: /
               port: http
+          {{ end }}
           volumeMounts:
             - name: data
               mountPath: /var/www/html
