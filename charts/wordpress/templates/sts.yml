@@ -38,10 +38,12 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+          {{ if not .Values.disableLivenessProbe }}
           livenessProbe:
             httpGet:
               path: /
               port: http
+          {{ end }}
           readinessProbe:
             httpGet:
               path: /
