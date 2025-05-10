@@ -17,6 +17,18 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{ if and .Values.affinitySameNodeKey .Values.affinitySameNodeValue }}
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: {{ .Values.affinitySameNodeKey }}
+                        operator: In
+                        values:
+                          - {{ .Values.affinitySameNodeValue }}
+                  topologyKey: "kubernetes.io/hostname"
+          {{ end }}
           volumes:
             - name: ssl
               emptyDir: {}

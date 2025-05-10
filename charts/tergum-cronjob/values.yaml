@@ -10,3 +10,5 @@ mountRootPath: false
 existingSecret: null
 expandEnv: false
 mountPVCName: null
+affinitySameNodeKey: null
+affinitySameNodeValue: null
