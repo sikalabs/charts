@@ -29,6 +29,11 @@ spec:
                 path: /
                 type: Directory
             {{ end }}
+            {{ if .Values.mountPVCName }}
+            - name: pvc
+              persistentVolumeClaim:
+                claimName: {{ .Values.mountPVCName }}
+            {{ end }}
           initContainers:
             - name: copy-ssl
               image: sikalabs/ca-certificates
@@ -69,4 +74,8 @@ spec:
               {{ if .Values.mountRootPath }}
               - mountPath: /host
                 name: host
+              {{ end }}
+              {{ if .Values.mountPVCName }}
+              - mountPath: /pvc
+                name: pvc
               {{ end }}
