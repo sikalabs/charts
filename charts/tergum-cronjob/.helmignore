@@ -1,2 +1,3 @@
 *.tgz
 *.local.sh
+*.local.yaml
