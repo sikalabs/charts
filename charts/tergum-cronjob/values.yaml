@@ -4,7 +4,7 @@ extraName:
 tergumConfig:
 
 # Optional
-image: sikalabs/tergum:v0.31.1
+image: sikalabs/tergum:v0.40.0
 useV2: false
 mountRootPath: false
 existingSecret: null
