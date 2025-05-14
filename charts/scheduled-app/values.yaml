@@ -1,0 +1,49 @@
+image:
+  repository: ""
+  tag: ""
+  pullSecretName: ""
+
+resources:
+  requests:
+    memory: 10Mi
+    cpu: 25m
+  limits:
+    memory: 50Mi
+    cpu: 50m
+
+concurrencyPolicy: "Forbid"
+
+cron: "*/5 * * * *"
+
+# Example:
+## commands:
+##  - echo "Hello World!"
+commands: []
+
+# Used to create a Secret with additional configuration files for the container
+# Example:
+## additionalConfigs:
+##   - name: "config.yaml"
+##     mountPath: "/app"
+##     config: |
+##       dbConfig:
+##         key: value
+##       httpConfig:
+##         key: value
+additionalConfigs: []
+
+# Used to mount an existing secrets containing additional configuration files to the container
+# Example:
+## existingConfigs:
+##   - secretName: "my-secret"
+##     name: "config.yaml"
+##     mountPath: "/app"
+existingConfigs: []
+
+
+# Used to add additional annotations to the pod
+# Example:
+## additionalPodAnnotations:
+##   prometheus.io/scrape: "true"
+##   prometheus.io/port: "8080"
+additionalPodAnnotations: {}
