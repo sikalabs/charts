@@ -1,0 +1,70 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cron | quote }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "default.labels" . | nindent 8 }}
+      {{- if .Values.additionalPodAnnotations }}
+      annotations:
+        {{- toYaml .Values.additionalPodAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          {{- if .Values.image.pullSecretName }}
+          imagePullSecrets:
+            - name: {{ .Values.image.pullSecretName }}
+          {{- end }}
+          containers:
+            - name: {{ .Release.Name }}
+              image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+              command: {{ .Values.commands | toJson }}
+              {{- if or .Values.existingConfigs .Values.additionalConfigs }}
+              volumeMounts:
+                {{- if .Values.existingConfigs }}
+                {{- range .Values.existingConfigs }}
+                - name: {{ .secretName }}
+                  mountPath: {{ .mountPath }}/{{ .name }}
+                  subPath: {{ .name }}
+                {{- end }}
+                {{- end }}
+                {{- if .Values.additionalConfigs }}
+                {{- range .Values.additionalConfigs }}
+                - name: secret-volume
+                  mountPath: {{ .mountPath }}/{{ .name }}
+                  subPath: {{ .name }}
+                {{- end }}
+                {{- end }}
+              {{- end }}
+              resources:
+                requests:
+                  memory: {{ .Values.resources.requests.memory }}
+                  cpu: {{ .Values.resources.requests.cpu }}
+                limits:
+                  memory: {{ .Values.resources.limits.memory }}
+                  cpu: {{ .Values.resources.limits.cpu }}
+          restartPolicy: Never
+          {{- if or .Values.existingConfigs .Values.additionalConfigs }}
+          volumes:
+            {{- if .Values.existingConfigs }}
+            {{- range .Values.existingConfigs }}
+            - name: {{ .secretName }}
+              secret:
+                secretName: {{ .secretName }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.additionalConfigs }}
+            - name: secret-volume
+              secret:
+                secretName: {{ .Release.Name }}-configs-secret
+            {{- end }}
+          {{- end }}
