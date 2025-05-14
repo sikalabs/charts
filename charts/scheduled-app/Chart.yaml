@@ -6,4 +6,4 @@ maintainers:
   - name: jozefvojtek
     email: jozef.vojtek@sikalabs.com
 name: scheduled-app
-version: 0.1.0-dev
+version: 0.1.0
