@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    release: {{ .Release.Name }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Release.Name }}-tls
+  rules:
+    - host: {{ required ".Values.host is required" .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  name: http
