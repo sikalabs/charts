@@ -1,0 +1,31 @@
+image: dpage/pgadmin4:latest
+defaultEmail: "example@example.com"
+defaultPassword: "example"
+defaultPasswordFromSecret: {}
+#  secretName: ""
+#  secretKey: ""
+extraEnv: [ ]
+
+persistentVolume:
+#  storageClass: ""
+  size: 1Gi
+
+ingress:
+  host: "pgadmin.example.com"
+  clusterIssuer: "letsencrypt"
+
+oauth: {}
+#  clientId: "example-client-id"
+#  clientSecret: "example-client-secret"
+#  clientSecretFromSecret: {}
+#    secretName: ""
+#    clientSecretKey: ""
+#  name: "Keycloak"
+#  displayName: "SSO"
+#  tokenUrl: "https://sso.example.com/realms/example/protocol/openid-connect/token"
+#  authorizationUrl: "https://sso.example.com/realms/example/protocol/openid-connect/auth"
+#  apiBaseUrl: "https://sso.example.com/"
+#  userinfoEndpoint: "realms/training/protocol/openid-connect/userinfo"
+#  metadataUrl: "https://sso.example.com/realms/example/.well-known/openid-configuration"
+#  logoutUrl: "https://sso.example.com/realms/example/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&id_token_hint={id_token}"
+#  masterPasswordRequired: false

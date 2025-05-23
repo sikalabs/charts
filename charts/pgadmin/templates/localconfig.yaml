@@ -1,0 +1,33 @@
+{{ if .Values.oauth.clientId }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config-local
+data:
+  config_local.py: |
+    import os
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+    {{ if not .Values.oauth.masterPasswordRequired }}
+    MASTER_PASSWORD_REQUIRED = False
+    {{ end }}
+    OAUTH2_CONFIG = [
+      {
+        'OAUTH2_NAME': '{{ .Values.oauth.name }}',
+        'OAUTH2_DISPLAY_NAME': '{{ .Values.oauth.displayName }}',
+        'OAUTH2_CLIENT_ID': '{{ .Values.oauth.clientId }}',
+        {{ if not .Values.oauth.clientSecretFromSecret.secretName }}
+        'OAUTH2_CLIENT_SECRET': 'example_client_secret',
+        {{ else }}
+        'OAUTH2_CLIENT_SECRET': os.environ.get('OAUTH2_CLIENT_SECRET'),
+        {{ end }}
+        'OAUTH2_TOKEN_URL': '{{ .Values.oauth.tokenUrl }}',
+        'OAUTH2_AUTHORIZATION_URL': '{{ .Values.oauth.authorizationUrl }}',
+        'OAUTH2_API_BASE_URL': '{{ .Values.oauth.apiBaseUrl }}',
+        'OAUTH2_USERINFO_ENDPOINT': '{{ .Values.oauth.userinfoEndpoint }}',
+        'OAUTH2_SCOPE': 'openid email profile',
+        'OAUTH2_SERVER_METADATA_URL': '{{ .Values.oauth.metadataUrl }}',
+        'OAUTH2_LOGOUT_URL': "{{ .Values.oauth.logoutUrl  }}",
+      }
+    ]
+
+{{ end }}
