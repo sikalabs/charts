@@ -29,6 +29,11 @@ spec:
             {{- range .Values.initContainers }}
             - name: {{ .name }}
               image: {{ .image.repository }}:{{ .image.tag }}
+              {{- if .envSecretName }}
+              envFrom:
+                - secretRef:
+                    name: {{ .envSecretName }}
+              {{- end }}
               {{- if .commands }}
               command: {{ .commands | toJson }}
               {{- end }}
@@ -50,6 +55,11 @@ spec:
           containers:
             - name: {{ .Release.Name }}
               image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+              {{- if .Values.envSecretName }}
+              envFrom:
+                - secretRef:
+                    name: {{ .Values.envSecretName }}
+              {{- end }}
               command: {{ .Values.commands | toJson }}
               {{- if or .Values.existingConfigs .Values.additionalConfigs .Values.volumeMounts }}
               volumeMounts:

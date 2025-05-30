@@ -20,6 +20,11 @@ cron: "*/5 * * * *"
 ##  - echo "Hello World!"
 commands: []
 
+# envSecretName is used to specify a Kubernetes Secret that contains environment variables for the container
+# Example:
+## envSecretName: "my-env-secret"
+envSecretName: ""
+
 # Used to create a Secret with additional configuration files for the container
 # Example:
 ## additionalConfigs:
@@ -75,6 +80,7 @@ volumes: []
 ##     image:
 ##       repository: "my-init-image"
 ##       tag: "latest"
+##     envSecretName: "my-init-env-secret"
 ##     commands:
 ##       - "echo 'Initializing...'"
 ##     resources:
