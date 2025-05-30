@@ -47,3 +47,44 @@ existingConfigs: []
 ##   prometheus.io/scrape: "true"
 ##   prometheus.io/port: "8080"
 additionalPodAnnotations: {}
+
+# Used to add additional volume mounts to the container
+## Example:
+## volumeMounts:
+##   - name: "my-volume"
+##     mountPath: "/data"
+volumeMounts: []
+
+# Used to add additional volumes to the pod
+# Example:
+## volumes:
+##   - name: "my-volume"
+##     persistentVolumeClaim:
+##       claimName: "my-pvc"
+##   - name: "my-secret-volume"
+##     secret:
+#         secretName: "my-secret"
+##    - name: "my-emptydir-volume"
+##      emptyDir: {}
+volumes: []
+
+# Used to add init containers to the pod
+## Example:
+## initContainers:
+##   - name: "init-myservice"
+##     image:
+##       repository: "my-init-image"
+##       tag: "latest"
+##     commands:
+##       - "echo 'Initializing...'"
+##     resources:
+##       requests:
+##         memory: 20Mi
+##         cpu: 50m
+##       limits:
+##         memory: 50Mi
+##         cpu: 100m
+##     volumeMounts:
+##      - name: "my-volume"
+##        mountPath: "/data"
+initContainers: []

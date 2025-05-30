@@ -24,11 +24,34 @@ spec:
           imagePullSecrets:
             - name: {{ .Values.image.pullSecretName }}
           {{- end }}
+          {{- if .Values.initContainers }}
+          initContainers:
+            {{- range .Values.initContainers }}
+            - name: {{ .name }}
+              image: {{ .image.repository }}:{{ .image.tag }}
+              {{- if .commands }}
+              command: {{ .commands | toJson }}
+              {{- end }}
+              {{- if .volumeMounts }}
+              volumeMounts:
+                {{- toYaml .volumeMounts | nindent 16 }}
+              {{- end }}
+              {{- if .resources }}
+              resources:
+                requests:
+                  memory: {{ .resources.requests.memory }}
+                  cpu: {{ .resources.requests.cpu }}
+                limits:
+                  memory: {{ .resources.limits.memory }}
+                  cpu: {{ .resources.limits.cpu }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
           containers:
             - name: {{ .Release.Name }}
               image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
               command: {{ .Values.commands | toJson }}
-              {{- if or .Values.existingConfigs .Values.additionalConfigs }}
+              {{- if or .Values.existingConfigs .Values.additionalConfigs .Values.volumeMounts }}
               volumeMounts:
                 {{- if .Values.existingConfigs }}
                 {{- range .Values.existingConfigs }}
@@ -44,6 +67,9 @@ spec:
                   subPath: {{ .name }}
                 {{- end }}
                 {{- end }}
+                {{- if .Values.volumeMounts }}
+                {{- toYaml .Values.volumeMounts | nindent 16 }}
+                {{- end }}
               {{- end }}
               resources:
                 requests:
@@ -53,7 +79,7 @@ spec:
                   memory: {{ .Values.resources.limits.memory }}
                   cpu: {{ .Values.resources.limits.cpu }}
           restartPolicy: Never
-          {{- if or .Values.existingConfigs .Values.additionalConfigs }}
+          {{- if or .Values.existingConfigs .Values.additionalConfigs .Values.volumes }}
           volumes:
             {{- if .Values.existingConfigs }}
             {{- range .Values.existingConfigs }}
@@ -66,5 +92,8 @@ spec:
             - name: secret-volume
               secret:
                 secretName: {{ .Release.Name }}-configs-secret
+            {{- end }}
+            {{- if .Values.volumes }}
+            {{- toYaml .Values.volumes | nindent 12 }}
             {{- end }}
           {{- end }}
