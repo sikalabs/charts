@@ -117,7 +117,7 @@ spec:
       cpu: {{ .Values.resources.limits.cpu }}
 
   affinity:
-    enablePodAntiAffinity: true
+    enablePodAntiAffinity: {{ .Values.affinity.enablePodAntiAffinity }}
     topologyKey: {{ .Values.affinity.topologyKey }}
     podAntiAffinityType: required
     nodeSelector:

@@ -26,6 +26,7 @@ resources:
 
 ## Example:
 # affinity:
+#   enablePodAntiAffinity: true
 #   topologyKey: "kubernetes.io/hostname"
 #   nodeSelector:
 #     node-role.kubernetes.io/database: "true"
@@ -35,6 +36,7 @@ resources:
 #       value: "database"
 #       effect: "NoExecute"
 affinity:
+  enablePodAntiAffinity: true
   topologyKey: "kubernetes.io/hostname"
   nodeSelector: {}
   tolerations: []
