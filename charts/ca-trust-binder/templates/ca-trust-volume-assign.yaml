@@ -40,5 +40,7 @@ spec:
           items:
             - key: "ca-bundle.crt"
               path: "ca-bundle.crt"
+            - key: "ca-bundle.crt"
+              path: "ca-certificates.crt"
 ---
 {{- end }}
