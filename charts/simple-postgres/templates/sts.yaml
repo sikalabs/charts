@@ -22,15 +22,21 @@ spec:
           env:
            - name: POSTGRES_PASSWORD
              value: "{{ required ".Values.POSTGRES_PASSWORD is required" .Values.POSTGRES_PASSWORD}}"
+           - name: PGDATA
+             value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
            - name: postgres
-             mountPath: "/var/lib/postgresql"
+             mountPath: "/var/lib/postgresql/data"
   volumeClaimTemplates:
     - metadata:
        name: postgres
       spec:
        accessModes:
        - ReadWriteOnce
+       {{- if .Values.storageClassName }}
+       storageClassName: {{ .Values.storageClassName }}
+       {{- end }}
        resources:
         requests:
          storage: {{ .Values.storageSize }}
+
