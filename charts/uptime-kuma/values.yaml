@@ -4,6 +4,7 @@ host:
 # Optional
 image: louislam/uptime-kuma:1
 storage: 1Gi
+storageClass:
 proxyBodySize: 500m
 clusterIssuer: letsencrypt
 # ingressExtraAnnotations:
