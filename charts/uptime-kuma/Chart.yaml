@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Uptime Kuma
 name: uptime-kuma
-version: 0.5.0-dev
+version: 0.5.0
