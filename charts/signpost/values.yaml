@@ -1,5 +1,5 @@
 # Optional
-image: sikalabs/signpost:v0.3.0
+image: sikalabs/signpost:v0.7.0
 replicas: 1
 host: null
 clusterIssuer: letsencrypt
