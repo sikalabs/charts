@@ -1,0 +1,8 @@
+# Optional
+image: mysql
+storage: 1Gi
+MYSQL_ROOT_PASSWORD: root
+MYSQL_DATABASE: default
+MYSQL_USER: 'user'
+MYSQL_PASSWORD: 'password'
+mysqlExtraArgs: ''

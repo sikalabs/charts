@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Simple single instance MySQL
+name: simple-mysql
+version: 0.1.0-dev
