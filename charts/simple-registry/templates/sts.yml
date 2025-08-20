@@ -11,6 +11,9 @@ spec:
     - metadata:
         name: data
       spec:
+        {{ if .Values.storageClassName }}
+        storageClassName: {{ .Values.storageClassName }}
+        {{ end }}
         accessModes:
           - ReadWriteOnce
         resources:

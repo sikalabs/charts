@@ -4,6 +4,7 @@ host:
 # Optional
 image: registry:2
 storage: 1Gi
+storageClassName:
 proxyBodySize: 500m
 clusterIssuer: letsencrypt
 registryUser: admin
