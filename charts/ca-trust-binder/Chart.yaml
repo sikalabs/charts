@@ -2,4 +2,4 @@ apiVersion: v2
 name: ca-trust-binder
 description: Create Root CA Certificate trust store and bind it to your applications using Cert-Manager, Trust-Manager and Gatekeeper
 type: application
-version: 0.4.0
+version: 0.5.0-dev
