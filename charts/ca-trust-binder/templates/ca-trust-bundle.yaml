@@ -14,8 +14,8 @@ spec:
       key: "ca-bundle.crt"
     namespaceSelector:
     {{- if .Values.includedNamespaces }}
-      matchLabels:
+      matchNames:
       {{- range $includedNamespace := .Values.includedNamespaces }}
-        name: {{ $includedNamespace | quote }}
+        - {{ $includedNamespace | quote }}
       {{- end }}
     {{- end }}

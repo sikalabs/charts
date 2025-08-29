@@ -17,7 +17,7 @@ spec:
         kinds: [ "Pod" ]
     {{- if $includedNamespaces }}
     namespaces:
-      {{- range $includedNamespace := .Values.includedNamespaces }}
+      {{- range $includedNamespace := $includedNamespaces }}
       - {{ $includedNamespace | quote }}
       {{- end }}
     {{- end}}
