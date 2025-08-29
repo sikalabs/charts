@@ -12,10 +12,4 @@ spec:
   target:
     configMap:
       key: "ca-bundle.crt"
-    namespaceSelector:
-    {{- if .Values.includedNamespaces }}
-      matchNames:
-      {{- range $includedNamespace := .Values.includedNamespaces }}
-        - {{ $includedNamespace | quote }}
-      {{- end }}
-    {{- end }}
+    namespaceSelector: {}
