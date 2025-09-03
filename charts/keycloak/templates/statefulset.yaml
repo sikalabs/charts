@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "default.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ .Release.Name }}-headless
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      {{- if .Values.tls.enabled }}
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: keycloak-tls
+      {{- end }}
+      containers:
+        - name: keycloak
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["start"]
+          env:
+            # Admin user
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: {{ .Values.auth.admin.username | quote }}
+            {{- if .Values.auth.admin.existingSecret }}
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.admin.existingSecret }}
+                  key: {{ .Values.auth.admin.existingSecretKey }}
+            {{- else }}
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: admin-password
+            {{- end }}
+
+            # Management user
+            - name: KC_MANAGEMENT_USERNAME
+              value: {{ .Values.auth.management.username | quote }}
+            {{- if .Values.auth.management.existingSecret }}
+            - name: KC_MANAGEMENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.management.existingSecret }}
+                  key: {{ .Values.auth.management.existingSecretKey }}
+            {{- else }}
+            - name: KC_MANAGEMENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: management-password
+            {{- end }}
+
+            # Database
+            - name: KC_DB
+              value: {{ .Values.database.type | quote }}
+            - name: KC_DB_URL_HOST
+              value: {{ .Values.database.host | quote }}
+            - name: KC_DB_URL_DATABASE
+              value: {{ .Values.database.database | quote }}
+            - name: KC_DB_USERNAME
+              value: {{ .Values.database.username | quote }}
+            - name: KC_DB_URL_PORT
+              value: "{{ .Values.database.port }}"
+            - name: KC_DB_PASSWORD
+              {{- if .Values.database.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.existingSecretPasswordKey }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: db-password
+              {{- end }}
+
+            # Keycloak základní nastavení
+            - name: KC_PROFILE
+              value: {{- if .Values.keycloak.production }} "prod"{{- else }}"dev"{{- end }}
+            - name: KC_PROXY_HEADERS
+              value: {{ .Values.keycloak.proxyHeaders | quote }}
+            - name: KC_HTTP_ENABLED
+              value: {{ not .Values.tls.enabled | quote }}
+            - name: KC_HOSTNAME_STRICT
+              value: {{ .Values.keycloak.hostnameStrict | quote }}
+            - name: KC_HEALTH_ENABLED
+              value: {{ .Values.keycloak.healthEnabled | quote }}
+            - name: KC_METRICS_ENABLED
+              value: {{ .Values.metrics.enabled | quote }}
+            - name: KC_CACHE
+              value: {{ .Values.keycloak.cache | quote }}
+            {{- if .Values.tls.enabled }}
+            - name: KC_HTTPS_CERTIFICATE_FILE
+              value: /etc/x509/https/tls.crt
+            - name: KC_HTTPS_CERTIFICATE_KEY_FILE
+              value: /etc/x509/https/tls.key
+            {{- end }}
+
+          ports:
+            - name: probes
+              containerPort: 9000
+            {{- if not .Values.tls.enabled }}
+            - name: http
+              containerPort: 8080
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: https
+              containerPort: 8443
+            {{- end }}
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+          {{- if .Values.tls.enabled }}
+          volumeMounts:
+            - name: tls-certs
+              mountPath: /etc/x509/https
+              readOnly: true
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: 9000
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: 9000
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.probes.startup.path }}
+              port: 9000
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}

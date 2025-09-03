@@ -1,0 +1,95 @@
+replicaCount: 2
+
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: "26.3.3"
+  pullPolicy: IfNotPresent
+
+tls:
+  enabled: false
+  issuer:
+    name: letsencrypt
+    kind: ClusterIssuer
+
+ingress:
+  enabled: false
+  annotations: { }
+  host: chart-example.local
+  ingressClassName: ""
+  paths:
+    - path: /
+  tlsSecret:
+    enabled: false
+    name: ""
+    tlsCrt: ""
+    tlsKey: ""
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2000Mi
+  requests:
+    cpu: 500m
+    memory: 1700Mi
+
+# Administrátorské účty
+auth:
+  admin:
+    username: admin
+    password: ""             # pokud vyplníš, použije se tato hodnota
+    existingSecret: ""       # název Secretu, pokud má být heslo načteno odsud
+    existingSecretKey: admin-password
+  management:
+    username: manager
+    password: ""             # pokud vyplníš, použije se tato hodnota
+    existingSecret: ""       # název Secretu, pokud má být heslo načteno odsud
+    existingSecretKey: management-password
+
+keycloak:
+  # The hostname that Keycloak will use. Important for tls/ssl.
+  hostname: ""
+  # Determines how Keycloak handles proxy headers (e.g., X-Forwarded-For, X-Forwarded-Proto).
+  # Set to "xforwarded" when running behind a reverse proxy or ingress controller.
+  proxyHeaders: xforwarded
+  # Enables or disables plain HTTP. Should be set to "false" in production if TLS is used.
+  httpEnabled: true
+  # When set to true, Keycloak will enforce strict hostname checks based on the configured hostname.
+  # For development or dynamic environments, set to false.
+  hostnameStrict: false
+  # Enables the health check endpoints (/health/ready, /health/live, /health/started).
+  # Useful for Kubernetes probes and monitoring.
+  healthEnabled: true
+  # Defines the caching provider. Default is "ispn" (Infinispan).
+  # Can be changed for different caching strategies if required.
+  cache: ispn
+  # Keycloak profile to use. Options are "prod" or "dev".
+  production: true
+
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+
+database:
+  type: postgres
+  host: postgres
+  port: 5432
+  database: keycloak
+  username: keycloak
+  password: keycloak
+#  existingSecret: "keycloak"
+#  existingSecretPasswordKey: password
+
+probes:
+  startup:
+    path: /health/started
+    periodSeconds: 1
+    failureThreshold: 600
+  readiness:
+    path: /health/ready
+    periodSeconds: 10
+    failureThreshold: 3
+  liveness:
+    path: /health/live
+    periodSeconds: 10
+    failureThreshold: 3

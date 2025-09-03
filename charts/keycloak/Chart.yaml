@@ -1,0 +1,10 @@
+apiVersion: v2
+description: Keycloak Helm Chart for running Keycloak on Kubernetes
+type: application
+maintainers:
+  - name: Vojtech Pastyrik
+    email: vojtech@pastyrik.dev
+name: keycloak
+version: 0.1.0
+appVersion: 26.3.3
+kubeVersion: ">=1.20.0-0"
