@@ -52,7 +52,18 @@ spec:
               args:
                 - /bin/sh
                 - -c
-                - cp -r /etc/ssl/* /ssl/.
+                - |
+                  set -eu
+                  # Only copy public trust stores; never touch /etc/ssl/private (root-only)
+                  mkdir -p /ssl/certs
+                  cp -a /etc/ssl/certs/. /ssl/certs/
+                  if [ -f /etc/ssl/certs/ca-certificates.crt ]; then
+                    cp -a /etc/ssl/certs/ca-certificates.crt /ssl/
+                  fi
+                  if [ -f /etc/ssl/openssl.cnf ]; then
+                    cp -a /etc/ssl/openssl.cnf /ssl/
+                  fi
+                  chmod -R a+rX /ssl
               volumeMounts:
               - name: ssl
                 mountPath: /ssl
