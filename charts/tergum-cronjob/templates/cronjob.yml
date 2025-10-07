@@ -46,6 +46,11 @@ spec:
               persistentVolumeClaim:
                 claimName: {{ .Values.mountPVCName }}
             {{ end }}
+            {{ if .Values.customCASecret }}
+            - name: custom-ca
+              secret:
+                secretName: {{ .Values.customCASecret }}
+            {{ end }}
           initContainers:
             - name: copy-ssl
               image: sikalabs/ca-certificates
@@ -89,6 +94,11 @@ spec:
               - secretRef:
                   name: {{ .Values.existingSecret }}
               {{ end }}
+              {{ if .Values.customCASecret }}
+              env:
+                - name: SSL_CERT_FILE
+                  value: /etc/ssl/custom/ca.crt
+              {{ end }}
               volumeMounts:
               - name: ssl
                 mountPath: /etc/ssl
@@ -101,4 +111,9 @@ spec:
               {{ if .Values.mountPVCName }}
               - mountPath: /pvc
                 name: pvc
+              {{ end }}
+              {{ if .Values.customCASecret }}
+              - mountPath: /etc/ssl/custom
+                name: custom-ca
+                readOnly: true
               {{ end }}

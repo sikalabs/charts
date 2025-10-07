@@ -12,3 +12,4 @@ expandEnv: false
 mountPVCName: null
 affinitySameNodeKey: null
 affinitySameNodeValue: null
+customCASecret: null
