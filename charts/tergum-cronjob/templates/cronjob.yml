@@ -63,7 +63,7 @@ spec:
                   if [ -f /etc/ssl/openssl.cnf ]; then
                     cp -a /etc/ssl/openssl.cnf /ssl/
                   fi
-                  chmod -R a+rX /ssl
+                  chmod -R a+rX /ssl || true
               volumeMounts:
               - name: ssl
                 mountPath: /ssl
