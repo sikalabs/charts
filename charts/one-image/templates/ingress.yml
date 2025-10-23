@@ -21,7 +21,7 @@ metadata:
     {{ $k }}: {{ $v | quote }}
     {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingressClassName }}
   {{ if .Values.tls }}
   tls:
     - hosts:

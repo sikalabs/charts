@@ -5,6 +5,7 @@ host:
 # Optional
 path: /
 pathType: Prefix
+ingressClassName: nginx
 clusterIssuer: letsencrypt
 containerPort: 80
 wwwRedirect: false
