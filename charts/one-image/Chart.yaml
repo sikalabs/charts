@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Serving one image on Kubernetes Ingress
 name: one-image
-version: 1.19.0-dev
+version: 1.19.0
