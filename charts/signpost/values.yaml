@@ -5,6 +5,7 @@ host: null
 clusterIssuer: letsencrypt
 ingressClassName: nginx
 ingressExtraAnnotations: {}
+ingressTlsDisable: false
 tlsKeyBase64: null
 tlsCrtBase64: null
 signpost_yaml:
