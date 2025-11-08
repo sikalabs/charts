@@ -1,0 +1,8 @@
+apiVersion: v2
+description: SikaLabs wrapper for external-secrets
+name: sikalabs-external-secrets
+version: 0.0.0
+dependencies:
+  - name: external-secrets
+    version: 0.13.0
+    repository: https://charts.external-secrets.io
