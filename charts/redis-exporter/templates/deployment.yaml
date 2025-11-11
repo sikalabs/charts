@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: redis-exporter
-          image: oliver006/redis_exporter
+          image: ghcr.io/oliver006/redis_exporter
           ports:
             - name: http
               containerPort: 9121
