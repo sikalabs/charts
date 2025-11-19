@@ -1,0 +1,17 @@
+{{- if and .Values.headplane.enabled .Values.headplane.persistence.enabled (not .Values.headplane.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "headscale.fullname" . }}-headplane-data
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+spec:
+  accessModes: {{ toJson .Values.headplane.persistence.accessModes }}
+  resources:
+    requests:
+      storage: {{ .Values.headplane.persistence.size }}
+  {{- if .Values.headplane.persistence.storageClass }}
+  storageClassName: {{ .Values.headplane.persistence.storageClass | quote }}
+  {{- end }}
+{{- end }}
+

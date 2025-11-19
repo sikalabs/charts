@@ -1,0 +1,21 @@
+{{- if .Values.headplane.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "headscale.fullname" . }}-headplane
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+  {{- with .Values.headplane.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.headplane.service.type }}
+  selector:
+    app: {{ include "headscale.fullname" . }}-headplane
+  ports:
+    - name: http
+      port: {{ .Values.headplane.service.port }}
+      targetPort: http
+{{- end }}
+

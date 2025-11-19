@@ -1,0 +1,13 @@
+# Common VCS dirs
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+
+# Mac metadata
+*.DS_Store
+

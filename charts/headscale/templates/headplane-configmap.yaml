@@ -1,0 +1,34 @@
+{{- if .Values.headplane.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "headscale.fullname" . }}-headplane-config
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+data:
+  config.yaml: |-
+    server:
+      host: {{ .Values.headplane.config.server.host | quote }}
+      port: {{ .Values.headplane.config.server.port }}
+      cookie_secret: {{ .Values.headplane.config.server.cookieSecret | quote }}
+      cookie_secure: {{ .Values.headplane.config.server.cookieSecure }}
+
+    headscale:
+      url: {{ default (printf "http://%s:%d" (include "headscale.fullname" .) (.Values.headscale.service.httpPort | int)) .Values.headplane.config.headscale.internalUrl | quote }}
+      public_url: {{ default .Values.headscale.serverUrl .Values.headplane.config.headscale.publicUrl | quote }}
+      config_path: {{ .Values.headplane.config.headscale.configPath | quote }}
+      config_strict: {{ .Values.headplane.config.headscale.configStrict }}
+
+    integration:
+      docker:
+        enabled: false
+        container_name: "headscale"
+        socket: "unix:///var/run/docker.sock"
+      kubernetes:
+        enabled: false
+        validate_manifest: true
+        pod_name: "headscale"
+      proc:
+        enabled: false
+{{- end }}
+

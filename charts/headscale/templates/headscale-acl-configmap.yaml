@@ -1,0 +1,12 @@
+{{- if and .Values.headscale.enabled .Values.headscale.policy.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "headscale.fullname" . }}-acl
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+data:
+  acl.hujson: |-
+{{ .Values.headscale.policy.hujson | indent 4 }}
+{{- end }}
+

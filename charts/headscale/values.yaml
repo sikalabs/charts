@@ -1,0 +1,159 @@
+# Global toggles
+headscale:
+  enabled: true
+
+  image:
+    repository: ghcr.io/juanfont/headscale
+    tag: v0.27.1
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    httpPort: 8080
+    metricsPort: 9090
+    annotations: {}
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/websocket-services: headscale
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    host: vpn.example.com
+    tls:
+      enabled: true
+      secretName: vpn-example-tls
+    derpPath: /derp
+
+  serverUrl: https://vpn.example.com
+
+  # Basic network settings
+  prefixes:
+    v4: 100.64.0.0/10
+    v6: fd7a:115c:a1e0::/48
+
+  dns:
+    baseDomain: example.vpn
+    magicDNS: false
+    nameserversGlobal: []
+
+  ephemeralNodeInactivityTimeout: 30m
+
+  # Database configuration
+  db:
+    host: postgres-rw.postgres.svc.cluster.local
+    name: headscale
+    user: headscale
+    port: 5432
+    ssl: false
+    existingSecret: db
+    passwordKey: HEADSCALE_DATABASE_POSTGRES_PASS
+
+  # OIDC configuration (optional)
+  oidc:
+    enabled: false
+    issuer: ""
+    clientId: headscale
+    existingSecret: ""
+    clientSecretKey: clientSecret
+
+  # Embedded DERP configuration
+  derp:
+    enabled: true
+    autoUpdateEnabled: false
+    updateFrequency: 24h
+    # Empty -> only embedded DERP
+    urls: ""
+    regionId: 999
+    regionCode: default
+    regionName: Default DERP Region
+    # v0.27 requires a STUN addr if DERP enabled; bind to loopback to avoid external UDP
+    stunListenAddr: 127.0.0.1:3478
+    # Port advertised to clients (HTTPS at the edge via Ingress)
+    derpPort: 443
+    privateKeyPath: /etc/headscale/derp_server_private.key
+
+  # Persistence for /etc/headscale (keys, config)
+  persistence:
+    enabled: true
+    existingClaim: ""
+    size: 1Gi
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+
+  # ACL/Policy file mounted from ConfigMap
+  policy:
+    create: true
+    # HUJSON content
+    hujson: |-
+      {
+        "groups": {},
+        "hosts": {},
+        "acls": [
+          { "action": "accept", "src": ["*"], "dst": ["*:*"] }
+        ]
+      }
+
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+  extraEnv: []
+
+headplane:
+  enabled: true
+
+  image:
+    repository: ghcr.io/tale/headplane
+    tag: 0.5.5
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  service:
+    type: ClusterIP
+    port: 3000
+    annotations: {}
+
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    host: ui-vpn.example.com
+    path: /admin
+    tls:
+      enabled: true
+      secretName: ui-vpn-example-tls
+
+  persistence:
+    enabled: true
+    existingClaim: ""
+    size: 1Gi
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+
+  # Headplane app config
+  config:
+    server:
+      host: 0.0.0.0
+      port: 3000
+      cookieSecret: "0123456789ABCDEF0123456789ABCDEF" # must be 32 chars
+      cookieSecure: true
+    headscale:
+      # Internal URL inside cluster; default computed to headscale service
+      internalUrl: ""
+      # Public URL users see; defaults to headscale.serverUrl
+      publicUrl: ""
+      # Optional: Headscale config path mounted into Headplane pod
+      configPath: "/etc/headscale/config.yaml"
+      configStrict: true

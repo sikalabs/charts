@@ -1,0 +1,44 @@
+{{- if .Values.headplane.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "headscale.fullname" . }}-headplane
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.headplane.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "headscale.fullname" . }}-headplane
+  template:
+    metadata:
+      labels:
+        app: {{ include "headscale.fullname" . }}-headplane
+    spec:
+      containers:
+        - name: headplane
+          image: {{ .Values.headplane.image.repository }}:{{ .Values.headplane.image.tag }}
+          imagePullPolicy: {{ .Values.headplane.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.headplane.service.port }}
+              name: http
+          volumeMounts:
+            - name: headplane-config
+              mountPath: /etc/headplane/config.yaml
+              subPath: config.yaml
+            - name: headplane-data
+              mountPath: /var/lib/headplane
+      volumes:
+        - name: headplane-config
+          configMap:
+            name: {{ include "headscale.fullname" . }}-headplane-config
+        - name: headplane-data
+          {{- if .Values.headplane.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.headplane.persistence.existingClaim }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ include "headscale.fullname" . }}-headplane-data
+          {{- end }}
+{{- end }}
+

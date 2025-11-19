@@ -1,0 +1,27 @@
+{{- if .Values.headscale.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "headscale.fullname" . }}
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+  {{- with .Values.headscale.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.headscale.service.type }}
+  selector:
+    app.kubernetes.io/name: {{ include "headscale.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: {{ .Values.headscale.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+    - name: metrics
+      port: {{ .Values.headscale.service.metricsPort }}
+      targetPort: metrics
+      protocol: TCP
+{{- end }}
+

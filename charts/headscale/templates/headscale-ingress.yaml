@@ -1,0 +1,41 @@
+{{- if and .Values.headscale.enabled .Values.headscale.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "headscale.fullname" . }}
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+  {{- with .Values.headscale.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.headscale.ingress.className }}
+  ingressClassName: {{ .Values.headscale.ingress.className }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.headscale.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "headscale.fullname" . }}
+                port:
+                  number: {{ .Values.headscale.service.httpPort }}
+          - path: {{ .Values.headscale.ingress.derpPath }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "headscale.fullname" . }}
+                port:
+                  number: {{ .Values.headscale.service.httpPort }}
+  {{- if .Values.headscale.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.headscale.ingress.host | quote }}
+      secretName: {{ .Values.headscale.ingress.tls.secretName | quote }}
+  {{- end }}
+{{- end }}
+

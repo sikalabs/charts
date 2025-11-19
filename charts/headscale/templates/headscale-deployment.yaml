@@ -1,0 +1,185 @@
+{{- if .Values.headscale.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "headscale.fullname" . }}
+  labels:
+    {{- include "headscale.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.headscale.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "headscale.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "headscale.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        {{- toYaml .Values.headscale.podAnnotations | nindent 8 }}
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - name: headscale
+          image: {{ .Values.headscale.image.repository }}:{{ .Values.headscale.image.tag }}
+          imagePullPolicy: {{ .Values.headscale.image.pullPolicy }}
+          args: ["serve"]
+          env:
+            - name: HEADSCALE_DATABASE_POSTGRES_HOST
+              value: {{ .Values.headscale.db.host | quote }}
+            - name: HEADSCALE_DATABASE_POSTGRES_NAME
+              value: {{ .Values.headscale.db.name | quote }}
+            - name: HEADSCALE_DATABASE_POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-db" (include "headscale.fullname" .)) .Values.headscale.db.existingSecret }}
+                  key: {{ .Values.headscale.db.passwordKey }}
+            - name: HEADSCALE_DATABASE_POSTGRES_PORT
+              value: {{ .Values.headscale.db.port | quote }}
+            - name: HEADSCALE_DATABASE_POSTGRES_SSL
+              value: {{ .Values.headscale.db.ssl | quote }}
+            - name: HEADSCALE_DATABASE_POSTGRES_USER
+              value: {{ .Values.headscale.db.user | quote }}
+            - name: HEADSCALE_DATABASE_TYPE
+              value: postgres
+
+            - name: HEADSCALE_DERP_AUTO_UPDATE_ENABLED
+              value: {{ .Values.headscale.derp.autoUpdateEnabled | quote }}
+            - name: HEADSCALE_DERP_UPDATE_FREQUENCY
+              value: {{ .Values.headscale.derp.updateFrequency | quote }}
+            - name: HEADSCALE_DERP_URLS
+              value: {{ .Values.headscale.derp.urls | quote }}
+            - name: HEADSCALE_DERP_SERVER_ENABLED
+              value: {{ .Values.headscale.derp.enabled | quote }}
+            - name: HEADSCALE_DERP_SERVER_REGION_ID
+              value: {{ .Values.headscale.derp.regionId | quote }}
+            - name: HEADSCALE_DERP_SERVER_REGION_CODE
+              value: {{ .Values.headscale.derp.regionCode | quote }}
+            - name: HEADSCALE_DERP_SERVER_REGION_NAME
+              value: {{ .Values.headscale.derp.regionName | quote }}
+            - name: HEADSCALE_DERP_SERVER_STUN_LISTEN_ADDR
+              value: {{ .Values.headscale.derp.stunListenAddr | quote }}
+            - name: HEADSCALE_DERP_SERVER_DERP_PORT
+              value: {{ .Values.headscale.derp.derpPort | quote }}
+            - name: HEADSCALE_DERP_SERVER_PRIVATE_KEY_PATH
+              value: {{ .Values.headscale.derp.privateKeyPath | quote }}
+
+            - name: HEADSCALE_DNS_BASE_DOMAIN
+              value: {{ .Values.headscale.dns.baseDomain | quote }}
+            - name: HEADSCALE_DNS_MAGIC_DNS
+              value: {{ .Values.headscale.dns.magicDNS | quote }}
+            {{- if .Values.headscale.dns.nameserversGlobal }}
+            - name: HEADSCALE_DNS_NAMESERVERS_GLOBAL
+              value: {{ join "," .Values.headscale.dns.nameserversGlobal | quote }}
+            {{- end }}
+            - name: HEADSCALE_EPHEMERAL_NODE_INACTIVITY_TIMEOUT
+              value: {{ .Values.headscale.ephemeralNodeInactivityTimeout | quote }}
+            - name: HEADSCALE_LISTEN_ADDR
+              value: 0.0.0.0:{{ .Values.headscale.service.httpPort }}
+            - name: HEADSCALE_METRICS_LISTEN_ADDR
+              value: 0.0.0.0:{{ .Values.headscale.service.metricsPort }}
+            - name: HEADSCALE_NOISE
+              value: '{}'
+            - name: HEADSCALE_NOISE_PRIVATE_KEY_PATH
+              value: /etc/headscale/noise_private.key
+            {{- if .Values.headscale.oidc.enabled }}
+            - name: HEADSCALE_OIDC_CLIENT_ID
+              value: {{ .Values.headscale.oidc.clientId | quote }}
+            - name: HEADSCALE_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (printf "%s-oidc" (include "headscale.fullname" .)) .Values.headscale.oidc.existingSecret }}
+                  key: {{ .Values.headscale.oidc.clientSecretKey }}
+            - name: HEADSCALE_OIDC_ISSUER
+              value: {{ .Values.headscale.oidc.issuer | quote }}
+            {{- end }}
+            - name: HEADSCALE_PREFIXES_V4
+              value: {{ .Values.headscale.prefixes.v4 | quote }}
+            - name: HEADSCALE_PREFIXES_V6
+              value: {{ .Values.headscale.prefixes.v6 | quote }}
+            - name: HEADSCALE_PRIVATE_KEY_PATH
+              value: /etc/headscale/private.key
+            - name: HEADSCALE_SERVER_URL
+              value: {{ .Values.headscale.serverUrl | quote }}
+            - name: HEADSCALE_POLICY_PATH
+              value: /etc/headscale/acl.hujson
+            {{- if .Values.headscale.extraEnv }}
+            {{- toYaml .Values.headscale.extraEnv | nindent 12 }}
+            {{- end }}
+
+          ports:
+            - containerPort: {{ .Values.headscale.service.httpPort }}
+              name: http
+              protocol: TCP
+            - containerPort: {{ .Values.headscale.service.metricsPort }}
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 1
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: config
+              mountPath: /etc/headscale
+            {{- if .Values.headscale.policy.create }}
+            - name: acl
+              mountPath: /etc/headscale/acl.hujson
+              subPath: acl.hujson
+            {{- end }}
+          resources:
+            {{- toYaml .Values.headscale.resources | nindent 12 }}
+
+      initContainers:
+        - name: config
+          image: alpine
+          env:
+            - name: CONFIG_DIR
+              value: /etc/headscale
+          command: ["sh", "-c"]
+          args:
+            - |
+              if [ -f "$CONFIG_DIR/config.yaml" ]; then
+                echo 'Config already exists' >&2
+              else
+                echo 'Writing empty config' >&2
+                mkdir -p "$CONFIG_DIR"
+                cat <<'EOF' > "$CONFIG_DIR/config.yaml"
+                  # Headscale config is driven via env vars. See examples upstream.
+                EOF
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/headscale
+
+      volumes:
+        - name: config
+          {{- if .Values.headscale.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.headscale.persistence.existingClaim }}
+          {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ include "headscale.fullname" . }}-config
+          {{- end }}
+        {{- if .Values.headscale.policy.create }}
+        - name: acl
+          configMap:
+            name: {{ include "headscale.fullname" . }}-acl
+        {{- end }}
+{{- end }}
+

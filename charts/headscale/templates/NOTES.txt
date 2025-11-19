@@ -1,0 +1,14 @@
+Thank you for installing headscale!
+
+This chart can deploy:
+- Headscale control-plane (with embedded DERP) at: https://{{ .Values.headscale.ingress.host }}/
+- Optional DERP path: https://{{ .Values.headscale.ingress.host }}{{ .Values.headscale.ingress.derpPath }}
+- Optional Headplane UI: https://{{ .Values.headplane.ingress.host }}{{ .Values.headplane.ingress.path }}
+
+Next steps
+- kubectl -n {{ .Release.Namespace }} get pods,svc,ingress
+- Verify Headscale is healthy and DERP is active:
+  kubectl -n {{ .Release.Namespace }} logs deploy/{{ include "headscale.fullname" . }} | egrep -i "(derp|stun|policy)"
+- Test DERP-only from a Tailscale client:
+  tailscale ping --derp-only <peer>
+
