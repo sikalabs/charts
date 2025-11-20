@@ -17,6 +17,7 @@ data:
     headscale:
       url: {{ default (printf "http://%s:%d" (include "headscale.fullname" .) (.Values.headscale.service.httpPort | int)) .Values.headplane.config.headscale.internalUrl | quote }}
       public_url: {{ default .Values.headscale.serverUrl .Values.headplane.config.headscale.publicUrl | quote }}
+      config_strict: {{ .Values.headplane.config.headscale.configStrict }}
 
     integration:
       docker:
