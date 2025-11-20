@@ -1,4 +1,5 @@
 # Optional
-image: sikalabs/slu:v0.74.0
+image: ghcr.io/sikalabs/slu:v0.95.0
 replicas: 1
 prefix: loggen
+sleepTime: 1000
