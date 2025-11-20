@@ -2,6 +2,6 @@ apiVersion: v2
 name: headscale
 description: Headscale (with embedded DERP) and optional Headplane UI, packaged for multi-tenant installs
 type: application
-version: 0.1.3-dev
+version: 0.1.4-dev
 appVersion: "0.27.1"
 

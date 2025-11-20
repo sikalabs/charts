@@ -74,7 +74,7 @@ spec:
               value: {{ .Values.headscale.dns.magicDNS | quote }}
             {{- if .Values.headscale.dns.nameserversGlobal }}
             - name: HEADSCALE_DNS_NAMESERVERS_GLOBAL
-              value: {{ join "," .Values.headscale.dns.nameserversGlobal | quote }}
+              value: {{ join " " .Values.headscale.dns.nameserversGlobal | quote }}
             {{- end }}
             - name: HEADSCALE_EPHEMERAL_NODE_INACTIVITY_TIMEOUT
               value: {{ .Values.headscale.ephemeralNodeInactivityTimeout | quote }}
