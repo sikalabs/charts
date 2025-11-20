@@ -24,3 +24,5 @@ spec:
             - --json
             - --log-prefix
             - {{ .Values.prefix }}
+            - --sleep-time
+            - {{ .Values.sleepTime | quote }}
