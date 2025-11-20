@@ -28,7 +28,13 @@ spec:
               subPath: config.yaml
             - name: headplane-data
               mountPath: /var/lib/headplane
+            - mountPath: /etc/headplane/secrets
+              name: headplane-secrets
+              readOnly: true
       volumes:
+        - name: headplane-secrets
+          secret:
+            secretName: {{ include "headscale.fullname" . }}-headplane
         - name: headplane-config
           configMap:
             name: {{ include "headscale.fullname" . }}-headplane-config

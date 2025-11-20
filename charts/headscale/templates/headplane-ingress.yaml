@@ -31,4 +31,3 @@ spec:
       secretName: {{ .Values.headplane.ingress.tls.secretName | quote }}
   {{- end }}
 {{- end }}
-

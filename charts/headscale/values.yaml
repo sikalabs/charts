@@ -59,7 +59,7 @@ headscale:
     enabled: false
     issuer: ""
     clientId: headscale
-    existingSecret: ""
+    existingSecret: oidc
     clientSecretKey: clientSecret
 
   # Embedded DERP configuration
@@ -112,7 +112,7 @@ headplane:
 
   image:
     repository: ghcr.io/tale/headplane
-    tag: 0.5.5
+    tag: 0.6.1
     pullPolicy: IfNotPresent
 
   replicaCount: 1
@@ -142,12 +142,11 @@ headplane:
     accessModes:
       - ReadWriteOnce
 
-  # Headplane app config
   config:
+    disableApiKeyLogin: true
     server:
       host: 0.0.0.0
       port: 3000
-      cookieSecret: "0123456789ABCDEF0123456789ABCDEF" # must be 32 chars
       cookieSecure: true
     headscale:
       # Internal URL inside cluster; default computed to headscale service
@@ -157,3 +156,7 @@ headplane:
       # Optional: Headscale config path mounted into Headplane pod
       configPath: "/etc/headscale/config.yaml"
       configStrict: true
+
+  existingSecret: headplane
+  oidc:
+    redirectUri: "https://ui-vpn.example.com/admin/oidc/callback"

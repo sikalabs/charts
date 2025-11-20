@@ -10,14 +10,13 @@ data:
     server:
       host: {{ .Values.headplane.config.server.host | quote }}
       port: {{ .Values.headplane.config.server.port }}
-      cookie_secret: {{ .Values.headplane.config.server.cookieSecret | quote }}
       cookie_secure: {{ .Values.headplane.config.server.cookieSecure }}
+      cookie_secret_path: "/etc/headplane/secrets/cookie_secret"
+      data_path: "/var/lib/headplane"
 
     headscale:
       url: {{ default (printf "http://%s:%d" (include "headscale.fullname" .) (.Values.headscale.service.httpPort | int)) .Values.headplane.config.headscale.internalUrl | quote }}
       public_url: {{ default .Values.headscale.serverUrl .Values.headplane.config.headscale.publicUrl | quote }}
-      config_path: {{ .Values.headplane.config.headscale.configPath | quote }}
-      config_strict: {{ .Values.headplane.config.headscale.configStrict }}
 
     integration:
       docker:
@@ -30,5 +29,14 @@ data:
         pod_name: "headscale"
       proc:
         enabled: false
+
+    oidc:
+      issuer: {{ .Values.headscale.oidc.issuer | quote }}
+      client_id: "headscale"
+      disable_api_key_login: {{ .Values.headplane.config.disableApiKeyLogin }}
+      token_endpoint_auth_method: "client_secret_post"
+      redirect_uri: {{ .Values.headplane.oidc.redirectUri | quote }}
+      client_secret_path: "/etc/headplane/secrets/oidc_client_secret"
+      headscale_api_key_path: "/etc/headplane/secrets/headscale_api_key"
 {{- end }}
 
