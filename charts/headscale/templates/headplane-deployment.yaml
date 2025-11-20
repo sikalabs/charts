@@ -34,7 +34,7 @@ spec:
       volumes:
         - name: headplane-secrets
           secret:
-            secretName: {{ include "headscale.fullname" . }}-headplane
+            secretName: {{ default (printf "%s-headplane" (include "headscale.fullname" .)) .Values.headplane.existingSecret }}
         - name: headplane-config
           configMap:
             name: {{ include "headscale.fullname" . }}-headplane-config
