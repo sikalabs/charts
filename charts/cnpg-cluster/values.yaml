@@ -4,6 +4,11 @@ image:
   repository: ghcr.io/cloudnative-pg/postgresql
   tag: 16.4-41-bookworm
   pullPolicy: IfNotPresent
+  catalog:
+    enabled: false
+    type: ClusterImageCatalog
+    name: postgresql
+    major: 18
 
 replicas: 3
 
