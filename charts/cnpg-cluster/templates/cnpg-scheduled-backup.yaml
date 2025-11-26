@@ -7,6 +7,9 @@ metadata:
 spec:
   schedule: "{{ .Values.backup.scheduleCron }}"
   backupOwnerReference: self
+  method: plugin
   cluster:
     name: {{ .Release.Name }}
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
 {{- end }}
