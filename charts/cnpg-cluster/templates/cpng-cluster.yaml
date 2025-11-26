@@ -70,14 +70,14 @@ spec:
     size: {{ .Values.storage.size }}
     resizeInUseVolumes: {{ .Values.storage.resizeInUseVolumes }}
 
-    plugins:
-    {{- if .Values.backup.enabled }}
-      - name: barman-cloud.cloudnative-pg.io
-        enabled: true
-        isWALArchiver: true
-        parameters:
-          barmanObjectName: {{ .Release.Name }}-object-store
-    {{- end }}
+  plugins:
+  {{- if .Values.backup.enabled }}
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: {{ .Release.Name }}-object-store
+  {{- end }}
 
   {{- if .Values.recovery.enabled }}
   externalClusters:
