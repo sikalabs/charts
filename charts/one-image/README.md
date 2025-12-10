@@ -1,41 +1,24 @@
-# one image - helm chart
+[SikaLabs (sikalabs.com)](https://sikalabs.com) | [Ondrej Sika (sika.io)](https://sika.io) | [__Skoleni Kubernetes__](https://ondrej-sika.cz/skoleni/kubernetes/) 🚀💻
 
-    2019 Ondrej Sika <ondrej@ondrejsika.com>
-    https://github.com/ondrejsika/one-image-helm
+# sikalabs/one-image
 
-## Usage
+A simple Helm chart for deploying a single image to Kubernetes.
 
-Add repo
+## Configuration
 
-```
-helm repo add ondrejsika https://helm.oxs.cz
-```
+See the [values.yaml](./values.yaml) for configurable parameters.
 
-Install
+- https://github.com/sikalabs/charts/blob/master/charts/one-image/values.yaml (values.yaml on GitHub)
+- https://artifacthub.io/packages/helm/sikalabs/one-image?modal=values (values.yaml on Artifact Hub)
 
-```
+## Installation
+
+You have to provide required values `image` and `host`
+
+```bash
 helm upgrade --install \
-  <name> ondrejsika/one-image \
-  --set image=<image> \
-  --set host=<domain>
-```
-
-## Parameters
-
-- `image` (default `ondrejsika/go-hello-world:2`) - Docker image you want to serve
-- `host` (default `hello-world.local`) - Ingress hostname
-- `www_redirect` (default `true`) - www alias with redirect
-- `changeCause` (default `null`)
-- `replicas` (default `1`)
-- `dockerRegistry` (default `null`) - Private registry URL, eg. `registry.gitlab.com`
-- `dockerRegistryAuth` (default `null`) - Base64 encoded `user:token`, eg. `dXNlcjp0b2tlbgo=`
-- `restartAfterRedeploy` (default `false`) - restart pod after every update
-- `containerEnv` (default `null`) - add environment variable to container
-
-#### BasicAuth
-You can define BasicAuth credentials in values.yaml
-```
-basicAuth:
-  username: null (default)
-  password: null (default)
+  iceland-3 one-image \
+  --repo https://https://helm.sikalabs.io \
+  --set image=ghcr.io/ondrejsika/iceland-3 \
+  --set host=iceland-3.k8s.sikademo.com
 ```
