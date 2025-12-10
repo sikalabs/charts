@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Serving one image on Kubernetes Ingress
 name: one-image
-version: 1.20.0-dev
+version: 1.20.0
 icon: https://raw.githubusercontent.com/sikalabs/charts/refs/heads/master/charts/one-image/icon.png
 home: https://github.com/sikalabs/charts/tree/master/charts/one-image
 sources:
