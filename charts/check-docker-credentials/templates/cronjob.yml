@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+            - name: dockerconfig
+              secret:
+                secretName: {{ required ".Values.dockerRegistrySecretName is required" .Values.dockerRegistrySecretName }}
+          containers:
+            - name: main
+              image: ghcr.io/sikalabs/slr-with-ca-certificates
+              volumeMounts:
+                - name: dockerconfig
+                  mountPath: /root/.docker/config.json
+                  subPath: .dockerconfigjson
+              envFrom:
+                - secretRef:
+                    name: {{ required ".Values.envSecretName is required" .Values.envSecretName }}
+              args:
+                - /bin/sh
+                - -c
+                - slr check-docker-credentials
+                    --mail-from ${MAIL_FROM}
+                    --mail-to ${MAIL_TO}
+                    --smtp-host ${SMTP_HOST}
+                    --smtp-password ${SMTP_PASSWORD}
+                    --smtp-port ${SMTP_PORT}
+                    --smtp-user ${SMTP_USER}

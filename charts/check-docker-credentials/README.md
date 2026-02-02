@@ -1,0 +1,1 @@
+# sikalabs/check-docker-credentials
