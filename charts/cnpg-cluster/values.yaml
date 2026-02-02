@@ -144,8 +144,6 @@ backup:
     bucket: ""
     endpointUrl: ""
     credentialsSecretName: ""
-  walEncryption: ""
-  dataEncryption: ""
   retentionPolicy: ""
 
 pooler:

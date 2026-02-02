@@ -19,10 +19,14 @@ spec:
         key: ACCESS_SECRET_KEY
     wal:
       compression: gzip
+      {{- if .Values.backup.walEncryption }}
       encryption: {{ .Values.backup.walEncryption }}
+      {{- end }}
     data:
       compression: gzip
+      {{- if .Values.backup.dataEncryption }}
       encryption: {{ .Values.backup.dataEncryption }}
+      {{- end }}
       jobs: 2
   retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
 {{ end }}
