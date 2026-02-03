@@ -4,6 +4,12 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     release: {{ .Release.Name }}
+  {{ if .Values.deploymentExtraAnnotations }}
+  annotations:
+    {{- range $k, $v := .Values.deploymentExtraAnnotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   revisionHistoryLimit: 0

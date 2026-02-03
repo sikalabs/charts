@@ -13,6 +13,7 @@ BACKGROUND_COLOR:
 #   foo: bar
 ingressClassName: nginx
 ingressExtraAnnotations: {}
+deploymentExtraAnnotations: {}
 ingressTlsDisable: false
 tlsKeyBase64: null
 tlsCrtBase64: null
