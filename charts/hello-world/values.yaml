@@ -17,3 +17,4 @@ ingressTlsDisable: false
 tlsKeyBase64: null
 tlsCrtBase64: null
 imagePullSecret: null
+envFromSecretName: null
