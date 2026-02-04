@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   description: "{{ .Values.description }}"
-  {{- if.Values.image.catalog }}
+  {{- if.Values.image.catalog.enabled }}
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
     kind: ClusterImageCatalog
@@ -70,8 +70,8 @@ spec:
     size: {{ .Values.storage.size }}
     resizeInUseVolumes: {{ .Values.storage.resizeInUseVolumes }}
 
-  plugins:
   {{- if .Values.backup.enabled }}
+  plugins:
     - name: barman-cloud.cloudnative-pg.io
       enabled: true
       isWALArchiver: true
