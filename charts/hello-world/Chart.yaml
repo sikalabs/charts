@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Hello World example chart
 name: hello-world
-version: 0.17.0
+version: 0.18.0-dev
 icon: https://raw.githubusercontent.com/sikalabs/charts/refs/heads/master/charts/hello-world/logo.png
 home: https://github.com/sikalabs/charts/tree/master/charts/hello-world
 sources:
