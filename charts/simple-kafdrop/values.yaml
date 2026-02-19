@@ -1,0 +1,15 @@
+# Required
+host:
+kafkaBootstrapServer:
+
+# Optional
+image: obsidiandynamics/kafdrop
+path: /
+pathType: Prefix
+ingressClassName: nginx
+clusterIssuer: letsencrypt
+replicas: 1
+tls: true
+# ingressExtraAnnotations:
+#   foo: bar
+ingressExtraAnnotations: {}
