@@ -1,4 +1,4 @@
 apiVersion: v1
 description: SikaLabs Signpost
 name: signpost
-version: 0.5.0
+version: 0.6.0-dev
