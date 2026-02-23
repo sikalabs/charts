@@ -2,6 +2,11 @@
 image: sikalabs/signpost:v0.7.0
 replicas: 1
 host: null
+httpRoute:
+  enabled: false
+  gateway:
+    name: main-gateway
+    namespace: kube-system
 clusterIssuer: letsencrypt
 ingressClassName: nginx
 ingressExtraAnnotations: {}

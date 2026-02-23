@@ -1,4 +1,5 @@
 {{- if .Values.host }}
+{{- if not $.Values.httpRoute.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -29,4 +30,5 @@ spec:
                 name: {{ .Release.Name }}
                 port:
                   name: http
+{{ end }}
 {{ end }}
