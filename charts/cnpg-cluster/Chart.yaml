@@ -1,7 +1,7 @@
 apiVersion: v2
 name: cnpg-cluster
 description: CNPG.io PostgreSQL Cluster with restore from S3
-version: 0.15.0
+version: 0.16.0-dev
 maintainers:
   - name: Jozef Vojtek
     email: jozef.vojtek@sikalabs.com
