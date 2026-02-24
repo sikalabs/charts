@@ -149,6 +149,16 @@ backup:
 pooler:
   replicas: 3
   ## Example
+  # nodeSelector:
+  #   node-role.kubernetes.io/database: "true"
+  # tolerations:
+  #   - key: "Dedicated"
+  #     operator: "Equal"
+  #     value: "database"
+  #     effect: "NoExecute"
+  nodeSelector: {}
+  tolerations: []
+  ## Example
   # service:
   #   annotations:
   #     metallb.universe.tf/address-pool: db-pool

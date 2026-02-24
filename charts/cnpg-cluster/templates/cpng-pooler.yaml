@@ -18,6 +18,19 @@ spec:
       {{- end }}
     spec:
       type: {{ .Values.pooler.service.type }}
+  {{- if or .Values.pooler.nodeSelector .Values.pooler.tolerations }}
+  template:
+    spec:
+      containers: []
+      {{- if .Values.pooler.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.pooler.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.pooler.tolerations }}
+      tolerations:
+        {{- toYaml .Values.pooler.tolerations | nindent 8 }}
+      {{- end }}
+  {{- end }}
   pgbouncer:
     poolMode: {{ .Values.pooler.pgbouncer.poolMode }}
     {{- if .Values.pooler.pgbouncer.params }}
