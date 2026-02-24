@@ -7,7 +7,7 @@ spec:
   cluster:
     name: {{ .Release.Name }}
   instances: {{ .Values.pooler.replicas }}
-  type: rw
+  type: {{ .Values.pooler.type }}
   serviceTemplate:
     metadata:
       labels:

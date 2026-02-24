@@ -149,6 +149,7 @@ backup:
 
 pooler:
   replicas: 3
+  type: rw
   ## Example
   # nodeSelector:
   #   node-role.kubernetes.io/database: "true"
