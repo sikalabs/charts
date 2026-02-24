@@ -103,6 +103,9 @@ spec:
     limits:
       memory: {{ .Values.resources.limits.memory }}
       cpu: {{ .Values.resources.limits.cpu }}
+      {{- if .Values.resources.limits.hugepages }}
+      hugepages-2Mi: {{ .Values.resources.limits.hugepages }}
+      {{- end }}
 
   affinity:
     enablePodAntiAffinity: {{ .Values.affinity.enablePodAntiAffinity }}
