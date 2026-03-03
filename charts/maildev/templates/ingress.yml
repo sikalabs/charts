@@ -11,6 +11,9 @@ metadata:
     nginx.ingress.kubernetes.io/auth-secret: "{{ .Release.Name }}-ingress-auth"
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
     {{ end }}
+    {{- range $k, $v := .Values.ingressExtraAnnotations }}
+    {{ $k }}: {{ $v | quote }}
+    {{- end }}
 spec:
   ingressClassName: nginx
   tls:

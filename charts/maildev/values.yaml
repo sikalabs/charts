@@ -7,3 +7,7 @@ smtpServiceType: ClusterIP
 smtpNodePort:
 authUser:
 authPassword:
+ingressExtraAnnotations: {}
+# ingressExtraAnnotations:
+#   name: value
+#   foo: bar
