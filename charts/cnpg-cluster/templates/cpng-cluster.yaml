@@ -102,7 +102,9 @@ spec:
       cpu: {{ .Values.resources.requests.cpu }}
     limits:
       memory: {{ .Values.resources.limits.memory }}
+      {{- if .Values.resources.limits.cpu }}
       cpu: {{ .Values.resources.limits.cpu }}
+      {{- end }}
       {{- if .Values.resources.limits.hugepages }}
       hugepages-2Mi: {{ .Values.resources.limits.hugepages }}
       {{- end }}
