@@ -1,5 +1,43 @@
 {{- range .Values.rbacRules }}
-{{- if and .rules .clusterWide }}
+{{- if and .rules .clusterWide .namespaces }}
+{{- $rule := . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .name }}
+rules:
+  {{- range .rules }}
+  - apiGroups:
+      {{- range .apiGroups }}
+      - {{ . | quote }}
+      {{- end }}
+    resources:
+      {{- range .resources }}
+      - {{ . | quote }}
+      {{- end }}
+    verbs:
+      {{- range .verbs }}
+      - {{ . | quote }}
+      {{- end }}
+  {{- end }}
+{{- range .namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $rule.name }}
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $rule.name }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $rule.group }}
+{{- end }}
+{{- else if and .rules .clusterWide }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole

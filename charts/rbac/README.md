@@ -27,6 +27,16 @@ rbacRules:
         resources: ["*"]
         verbs: ["*"]
 
+  # Custom ClusterRole bound in specific namespaces
+  - name: ch-devs-extensions
+    group: "k8s:devs"
+    clusterWide: true
+    namespaces: [ch-kong, ch-camunda-orch]
+    rules:
+      - apiGroups: ["gateway.networking.k8s.io"]
+        resources: ["httproutes"]
+        verbs: ["*"]
+
   # Custom Role in multiple namespaces
   - name: pod-reader
     group: kubernetes-dev
