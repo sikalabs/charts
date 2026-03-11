@@ -1,38 +1,126 @@
 {{- range .Values.rbacRules }}
-{{- $roleKind := ternary "ClusterRole" "Role" .clusterWide -}}
-{{- $roleBindingKind := ternary "ClusterRoleBinding" "RoleBinding" .clusterWide -}}
+{{- if and .rules .clusterWide }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: {{ $roleKind }}
+kind: ClusterRole
 metadata:
   name: {{ .name }}
-  namespace: {{ .namespace }}
 rules:
+  {{- range .rules }}
   - apiGroups:
-      {{- range $apiGroup := .apiGroups }}
-      - {{ $apiGroup | quote }}
+      {{- range .apiGroups }}
+      - {{ . | quote }}
       {{- end }}
     resources:
-      {{- range $resource := .resources }}
-      - {{ $resource | quote }}
+      {{- range .resources }}
+      - {{ . | quote }}
       {{- end }}
     verbs:
-      {{- range $verb := .verbs }}
-      - {{ $verb | quote }}
+      {{- range .verbs }}
+      - {{ . | quote }}
       {{- end }}
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: {{ $roleBindingKind }}
+kind: ClusterRoleBinding
 metadata:
   name: {{ .name }}
-  namespace: {{ .namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: {{ $roleKind }}
+  kind: ClusterRole
   name: {{ .name }}
 subjects:
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
-  name: {{ .name }}
+  name: {{ .group }}
+{{- else if and .rules .namespaces }}
+{{- $rule := . }}
+{{- range .namespaces }}
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $rule.name }}
+  namespace: {{ . }}
+rules:
+  {{- range $rule.rules }}
+  - apiGroups:
+      {{- range .apiGroups }}
+      - {{ . | quote }}
+      {{- end }}
+    resources:
+      {{- range .resources }}
+      - {{ . | quote }}
+      {{- end }}
+    verbs:
+      {{- range .verbs }}
+      - {{ . | quote }}
+      {{- end }}
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $rule.name }}
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $rule.name }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $rule.group }}
+{{- end }}
+{{- else if and .existingClusterRole .clusterWide }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .name }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .existingClusterRole }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ .group }}
+{{- else if and .existingClusterRole .namespaces }}
+{{- $rule := . }}
+{{- range .namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $rule.name }}
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $rule.existingClusterRole }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $rule.group }}
+{{- end }}
+{{- else if and .existingRole .namespaces }}
+{{- $rule := . }}
+{{- range .namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $rule.name }}
+  namespace: {{ . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ $rule.existingRole }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $rule.group }}
+{{- end }}
+{{- end }}
 {{- end }}

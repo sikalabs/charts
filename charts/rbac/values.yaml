@@ -1,20 +1,36 @@
 rbacRules:
-  #- name: kubernetes-admin
-  #  apiGroups:
-  #    - "*"
-  #  resources:
-  #    - "*"
-  #  verbs:
-  #    - "*"
+  # Custom ClusterRole (cluster-wide)
+  #- name: admin-role
+  #  group: kubernetes-admin
   #  clusterWide: true
-  #  namespace: ""
+  #  rules:
+  #    - apiGroups: ["*"]
+  #      resources: ["*"]
+  #      verbs: ["*"]
 
-  #- name: kubernetes-ns-bar
-  #  apiGroups:
-  #    - "*"
-  #  resources:
-  #    - "*"
-  #  verbs:
-  #    - "*"
-  #  clusterWide: false
-  #  namespace: bar
+  # Custom Role in multiple namespaces
+  #- name: pod-reader
+  #  group: kubernetes-dev
+  #  namespaces: [default, monitoring]
+  #  rules:
+  #    - apiGroups: [""]
+  #      resources: [pods]
+  #      verbs: [get, list, watch]
+
+  # Bind to existing ClusterRole cluster-wide
+  #- name: view-all-binding
+  #  group: kubernetes-viewer
+  #  existingClusterRole: view
+  #  clusterWide: true
+
+  # Bind to existing ClusterRole in specific namespaces
+  #- name: dev-edit-binding
+  #  group: kubernetes-dev
+  #  existingClusterRole: edit
+  #  namespaces: [default, staging]
+
+  # Bind to existing Role in specific namespaces
+  #- name: dev-custom-binding
+  #  group: kubernetes-dev
+  #  existingRole: my-custom-role
+  #  namespaces: [default]
