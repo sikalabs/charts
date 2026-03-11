@@ -2,4 +2,4 @@ apiVersion: v2
 name: rbac
 description: Create RBAC objects
 type: application
-version: 0.3.0-dev
+version: 0.3.0
