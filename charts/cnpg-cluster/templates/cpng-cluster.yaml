@@ -113,10 +113,14 @@ spec:
     enablePodAntiAffinity: {{ .Values.affinity.enablePodAntiAffinity }}
     topologyKey: {{ .Values.affinity.topologyKey }}
     podAntiAffinityType: required
+    {{- if .Values.affinity.nodeSelector }}
     nodeSelector:
       {{- toYaml .Values.affinity.nodeSelector | nindent 6 }}
+    {{- end }}
+    {{- if .Values.affinity.tolerations }}
     tolerations:
       {{- toYaml .Values.affinity.tolerations | nindent 6 }}
+    {{- end }}
 
   nodeMaintenanceWindow:
     inProgress: false

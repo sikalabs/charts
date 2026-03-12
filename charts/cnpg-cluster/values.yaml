@@ -158,6 +158,14 @@ pooler:
   #     operator: "Equal"
   #     value: "database"
   #     effect: "NoExecute"
+  ## Example
+  # resources:
+  #   requests:
+  #     cpu: 100m
+  #     memory: 256M
+  #   limits:
+  #     memory: 512M
+  resources: {}
   nodeSelector: {}
   tolerations: []
   ## Example

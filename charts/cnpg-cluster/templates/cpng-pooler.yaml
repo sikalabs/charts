@@ -18,10 +18,15 @@ spec:
       {{- end }}
     spec:
       type: {{ .Values.pooler.service.type }}
-  {{- if or .Values.pooler.nodeSelector .Values.pooler.tolerations }}
+  {{- if or .Values.pooler.nodeSelector .Values.pooler.tolerations .Values.pooler.resources }}
   template:
     spec:
-      containers: []
+      containers:
+        - name: pgbouncer
+          {{- if .Values.pooler.resources }}
+          resources:
+            {{- toYaml .Values.pooler.resources | nindent 12 }}
+          {{- end }}
       {{- if .Values.pooler.nodeSelector }}
       nodeSelector:
         {{- toYaml .Values.pooler.nodeSelector | nindent 8 }}
