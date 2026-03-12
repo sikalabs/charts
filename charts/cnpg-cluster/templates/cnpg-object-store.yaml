@@ -10,6 +10,11 @@ spec:
     {{- if .Values.backup.s3.endpointUrl }}
     endpointURL: {{ .Values.backup.s3.endpointUrl }}
     {{- end }}
+    {{- if .Values.backup.endpointCA }}
+    endpointCA:
+      name: {{ .Values.backup.endpointCA.name }}
+      key: {{ .Values.backup.endpointCA.key }}
+    {{- end }}
     s3Credentials:
       accessKeyId:
         name: {{ .Values.backup.s3.credentialsSecretName }}

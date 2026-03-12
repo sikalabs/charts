@@ -138,6 +138,9 @@ recovery:
 #   walEncryption: AES256
 #   dataEncryption: AES256
 #   retentionPolicy: 1d
+#   endpointCA:
+#     name: my-ca-secret
+#     key: ca-bundle.crt
 backup:
   enabled: false
   scheduleCron: ""
