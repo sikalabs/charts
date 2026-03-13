@@ -141,6 +141,7 @@ recovery:
 #   endpointCA:
 #     name: my-ca-secret
 #     key: ca-bundle.crt
+#   s3ChecksumCompatMode: true
 backup:
   enabled: false
   scheduleCron: ""

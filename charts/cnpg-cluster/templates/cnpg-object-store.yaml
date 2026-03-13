@@ -34,6 +34,14 @@ spec:
       {{- end }}
       jobs: 2
   retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
+  {{- if .Values.backup.s3ChecksumCompatMode }}
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
+  {{- end }}
 {{ end }}
 
 
