@@ -13,3 +13,30 @@ mountPVCName: null
 affinitySameNodeKey: null
 affinitySameNodeValue: null
 customCASecret: null
+
+# Pod-level security context (PSA restricted compliant by default)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container-level security context, applied to both initContainers and main container
+# (PSA restricted compliant by default)
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  readOnlyRootFilesystem: false
+
+# Resource requests and limits (applied to both initContainers and main container)
+# Defaults sized to fit within typical namespace ResourceQuotas; tune per workload size
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi

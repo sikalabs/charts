@@ -17,6 +17,10 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{ if and .Values.affinitySameNodeKey .Values.affinitySameNodeValue }}
           affinity:
             podAffinity:
@@ -54,6 +58,14 @@ spec:
           initContainers:
             - name: copy-ssl
               image: sikalabs/ca-certificates
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
               args:
                 - /bin/sh
                 - -c
@@ -75,6 +87,14 @@ spec:
           containers:
             - name: main
               image: {{ .Values.image }}
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
               args:
                 - tergum
                 - backup
