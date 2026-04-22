@@ -5,5 +5,4 @@ metadata:
   labels:
     release: {{ .Release.Name }}
 data:
-  tergum.yml: |
-    {{- required ".Values.tergumConfig is required" .Values.tergumConfig | nindent 4 }}
+  tergum.yml: {{ required ".Values.tergumConfig is required" .Values.tergumConfig | toJson | quote }}
