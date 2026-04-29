@@ -58,6 +58,9 @@ spec:
         login: true
         passwordSecret:
           name: {{ $user.passwordSecretName }}
+        {{- if $user.inRoles }}
+        inRoles: {{- toYaml $user.inRoles | nindent 10 }}
+        {{- end }}
       {{- end }}
   {{- end }}
 

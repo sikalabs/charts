@@ -102,6 +102,12 @@ databases: []
 #     passwordSecretName: "my-user-secret"
 #   - name: "my-user-2"
 #     passwordSecretName: "my-user-2-secret"
+#   # Optional: list of existing roles this user is granted membership in
+#   # (e.g. PG14+ predefined roles like pg_read_all_data for backup users).
+#   - name: "backup"
+#     passwordSecretName: "backup-secret"
+#     inRoles:
+#       - pg_read_all_data
 users: []
 
 ## Example
