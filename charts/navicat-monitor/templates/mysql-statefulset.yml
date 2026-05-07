@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mysql
+spec:
+  serviceName: {{ .Release.Name }}-mysql
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mysql
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: {{ .Values.mysqlImage }}
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: {{ required ".Values.mysqlRootPassword is required" .Values.mysqlRootPassword | quote }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysqlDatabase | quote }}
+            - name: MYSQL_USER
+              value: {{ .Values.mysqlUser | quote }}
+            - name: MYSQL_PASSWORD
+              value: {{ required ".Values.mysqlPassword is required" .Values.mysqlPassword | quote }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        {{- if .Values.storageClassName }}
+        storageClassName: {{ .Values.storageClassName }}
+        {{- end }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.mysqlDataSize }}

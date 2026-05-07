@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Release.Name }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+      annotations:
+        cni.projectcalico.org/hwAddr: "F2:AA:F5:83:0F:A1"
+    spec:
+      nodeName: srv-kubernetes2
+      containers:
+        - name: main
+          image: {{ required ".Values.image is required" .Values.image }}
+          ports:
+            - name: http
+              containerPort: 3000
+          volumeMounts:
+            - name: var-data
+              mountPath: /opt/navicatmonitor/x86_64-linux-gnu/var
+            - name: certs-data
+              mountPath: /opt/navicatmonitor/x86_64-linux-gnu/certs
+  volumeClaimTemplates:
+    - metadata:
+        name: var-data
+      spec:
+        storageClassName: {{ .Values.storageClassName }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.varDataSize }}
+    - metadata:
+        name: certs-data
+      spec:
+        storageClassName: {{ .Values.storageClassName }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.certsDataSize }}

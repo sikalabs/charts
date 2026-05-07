@@ -1,0 +1,22 @@
+# Required
+host:
+mysqlRootPassword:
+mysqlPassword:
+
+# Optional
+image: navicat/navicatmonitor:3.1.6
+varDataSize: 1Gi
+certsDataSize: 1Gi
+clusterIssuer: letsencrypt
+# ingressExtraAnnotations:
+#   name: value
+#   foo: bar
+ingressClassName: nginx
+ingressExtraAnnotations: {}
+
+storageClassName: ""
+
+mysqlImage: mysql:8.0
+mysqlDataSize: 1Gi
+mysqlDatabase: navicat
+mysqlUser: navicat
