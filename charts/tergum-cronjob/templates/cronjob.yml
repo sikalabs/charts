@@ -17,6 +17,12 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
+          {{- if .Values.serviceAccount.name }}
+          serviceAccountName: {{ .Values.serviceAccount.name | quote }}
+          {{- end }}
+          {{- if hasKey .Values.serviceAccount "automountToken" }}
+          automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
+          {{- end }}
           {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
