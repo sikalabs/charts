@@ -15,6 +15,7 @@ affinitySameNodeValue: null
 customCASecret: null
 
 serviceAccount:
+  create: false
   name: null
   # automountToken: true
 
