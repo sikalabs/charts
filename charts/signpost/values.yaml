@@ -13,4 +13,5 @@ ingressExtraAnnotations: {}
 ingressTlsDisable: false
 tlsKeyBase64: null
 tlsCrtBase64: null
+tlsSecretName: null
 signpost_yaml:

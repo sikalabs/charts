@@ -7,7 +7,9 @@ metadata:
   labels:
     release: {{ .Release.Name }}
   annotations:
+    {{- if .Values.clusterIssuer }}
     cert-manager.io/cluster-issuer: {{ .Values.clusterIssuer }}
+    {{- end}}
     {{- range $k, $v := .Values.ingressExtraAnnotations }}
     {{ $k }}: {{ $v | quote }}
     {{- end }}
@@ -17,7 +19,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.host }}
-      secretName: {{ .Release.Name }}-tls
+      secretName: {{ .Values.tlsSecretName | default (printf "%s-tls" .Release.Name) }}
   {{- end }}
   rules:
     - host: {{ .Values.host }}
