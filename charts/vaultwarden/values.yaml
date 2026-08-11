@@ -12,3 +12,8 @@ ingressExtraAnnotations: {}
 
 # Optional ENV variables
 ADMIN_TOKEN:
+SSO_ENABLED:
+SSO_ONLY:
+SSO_AUTHORITY:
+SSO_CLIENT_ID:
+SSO_CLIENT_SECRET:

@@ -34,6 +34,26 @@ spec:
             - name: ADMIN_TOKEN
               value: {{ .Values.ADMIN_TOKEN }}
           {{ end }}
+          {{ if .Values.SSO_ENABLED }}
+            - name: SSO_ENABLED
+              value: {{ .Values.SSO_ENABLED | quote }}
+          {{ end }}
+          {{ if .Values.SSO_ONLY }}
+            - name: SSO_ONLY
+              value: {{ .Values.SSO_ONLY | quote }}
+          {{ end }}
+          {{ if .Values.SSO_AUTHORITY }}
+            - name: SSO_AUTHORITY
+              value: {{ .Values.SSO_AUTHORITY | quote }}
+          {{ end }}
+          {{ if .Values.SSO_CLIENT_ID }}
+            - name: SSO_CLIENT_ID
+              value: {{ .Values.SSO_CLIENT_ID | quote }}
+          {{ end }}
+          {{ if .Values.SSO_CLIENT_SECRET }}
+            - name: SSO_CLIENT_SECRET
+              value: {{ .Values.SSO_CLIENT_SECRET | quote }}
+          {{ end }}
           ports:
             - name: http
               containerPort: 80
