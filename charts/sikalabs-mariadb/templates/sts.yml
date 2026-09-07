@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    release: {{ .Release.Name }}
+spec:
+  serviceName: {{ .Release.Name }}-headless
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        {{- if .Values.storageClass }}
+        storageClassName: {{ .Values.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ required ".Values.storage is required" .Values.storage }}
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: mariadb
+          image: {{ required ".Values.image is required" .Values.image }}
+          ports:
+            - name: mariadb
+              containerPort: 3306
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: {{ required ".Values.MARIADB_ROOT_PASSWORD is required" .Values.MARIADB_ROOT_PASSWORD | quote }}
+            - name: MARIADB_DATABASE
+              value: {{ required ".Values.MARIADB_DATABASE is required" .Values.MARIADB_DATABASE | quote }}
+            - name: MARIADB_USER
+              value: {{ required ".Values.MARIADB_USER is required" .Values.MARIADB_USER | quote }}
+            - name: MARIADB_PASSWORD
+              value: {{ required ".Values.MARIADB_PASSWORD is required" .Values.MARIADB_PASSWORD | quote }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql

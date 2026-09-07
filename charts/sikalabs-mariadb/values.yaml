@@ -1,0 +1,22 @@
+# ===== Required =====
+
+# image: mariadb
+image:
+
+# storage: 1Gi
+storage:
+
+# MARIADB_ROOT_PASSWORD: root
+MARIADB_ROOT_PASSWORD:
+
+# MARIADB_DATABASE: default
+MARIADB_DATABASE:
+
+# MARIADB_USER: 'mariadb_user'
+MARIADB_USER:
+
+# MARIADB_PASSWORD: 'mariadb_password'
+MARIADB_PASSWORD:
+
+# ===== Optional =====
+storageClass: ""
