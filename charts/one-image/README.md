@@ -18,7 +18,7 @@ You have to provide required values `image` and `host`
 ```bash
 helm upgrade --install \
   iceland-3 one-image \
-  --repo https://https://helm.sikalabs.io \
+  --repo https://helm.sikalabs.io \
   --set image=ghcr.io/ondrejsika/iceland-3 \
   --set host=iceland-3.k8s.sikademo.com
 ```
