@@ -16,5 +16,5 @@ See the [values.yaml](./values.yaml) for configurable parameters.
 ```bash
 helm upgrade --install \
   my-hello-world hello-world \
-  --repo https://https://helm.sikalabs.io
+  --repo https://helm.sikalabs.io
 ```
