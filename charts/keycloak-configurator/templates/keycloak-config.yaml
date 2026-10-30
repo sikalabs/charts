@@ -187,6 +187,10 @@ data:
         {{ $groupObjectClass | quote }},
       {{- end }}
     ]
+    {{- if $ldapGroupMapper.groupsLdapFilter }}
+    groups_ldap_filter = "({{ $ldapGroupMapper.groupsLdapFilter }})"
+    {{- end }}
+
     membership_attribute_type      = {{ $ldapGroupMapper.membershipAttributeType | quote }}
     membership_ldap_attribute      = {{ $ldapGroupMapper.membershipLdapAttribute | quote }}
     membership_user_ldap_attribute = {{ $ldapGroupMapper.membershipUserLdapAttribute | quote }}
