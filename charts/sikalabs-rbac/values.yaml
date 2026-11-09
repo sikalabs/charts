@@ -1,0 +1,8 @@
+# clusterAdminUsers:
+#   - ondrej@sika.io
+#   - ondrej@sikalabs.com
+clusterAdminUsers: []
+
+# clusterAdminGroups:
+#   - kubernetes-admins
+clusterAdminGroups: []

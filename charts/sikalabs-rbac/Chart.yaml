@@ -1,0 +1,7 @@
+apiVersion: v1
+name: sikalabs-rbac
+version: 0.1.0-dev
+description: RBAC Configuration for SSO and more
+home: https://github.com/sikalabs/charts/tree/master/charts/sikalabs-rbac
+sources:
+  - https://github.com/sikalabs/charts/tree/master/charts/sikalabs-rbac
