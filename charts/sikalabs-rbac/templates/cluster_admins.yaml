@@ -8,10 +8,12 @@ roleRef:
   name: cluster-admin
 subjects:
   {{- range $user := .Values.clusterAdminUsers }}
-  - kind: User
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
     name: {{ $user }}
   {{- end }}
   {{- range $group := .Values.clusterAdminGroups }}
-  - kind: Group
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
     name: {{ $group }}
   {{- end }}
