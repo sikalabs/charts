@@ -12,6 +12,9 @@ persistentVolume:
 
 ingress:
   host: "pgadmin.example.com"
+  className: "nginx"
+  # Set to false when TLS is terminated by the ingress controller (e.g. default wildcard certificate)
+  tls: true
   clusterIssuer: "letsencrypt"
 
 oauth: {}

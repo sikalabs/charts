@@ -4,14 +4,18 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     release: {{ .Release.Name }}
+  {{- if and .Values.ingress.tls .Values.ingress.clusterIssuer }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+  {{- end }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.tls }}
   tls:
     - hosts:
         - {{ .Values.ingress.host }}
       secretName: {{ .Release.Name }}-tls
+  {{- end }}
   rules:
     - host: {{ required ".Values.host is required" .Values.ingress.host }}
       http:
