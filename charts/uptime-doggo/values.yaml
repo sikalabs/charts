@@ -1,0 +1,11 @@
+# Reuired
+uptimeDoggoConfig:
+
+# Optional
+image: ghcr.io/sikalabsregistry/uptime-doggo:wip-2026-11-27.0
+ingressHost:
+clusterIssuer: letsencrypt
+# ingressExtraAnnotations:
+#   name: value
+#   foo: bar
+ingressExtraAnnotations: {}

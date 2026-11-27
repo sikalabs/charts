@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    release: {{ .Release.Name }}
+data:
+  uptime-doggo.yaml: {{ required ".Values.uptimeDoggoConfig is required" .Values.uptimeDoggoConfig | toJson | quote }}
